@@ -1,0 +1,969 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1653382020492,
+        "links": [],
+        "panels": [
+            {
+                "datasource": null,
+                "gridPos": {
+                    "h": 3,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 18,
+                "options": {
+                    "content": "<center><h1> ${OrganizationName} </center></h1>",
+                    "mode": "html"
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__time(time_column),\n  value1\nFROM\n  metric_table\nWHERE\n  $__timeFilter(time_column)\n",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Organization",
+                "type": "text"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 11,
+                    "w": 10,
+                    "x": 0,
+                    "y": 3
+                },
+                "id": 10,
+                "options": {
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "percent",
+                            "value"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select cd.cluster_name, count(cd.cluster_name) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)\ngroup by cd.cluster_name",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Number of Nodes Distribution",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "description": "",
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 11,
+                    "w": 14,
+                    "x": 10,
+                    "y": 3
+                },
+                "id": 16,
+                "options": {
+                    "basemap": {
+                        "config": {},
+                        "type": "osm-standard"
+                    },
+                    "controls": {
+                        "mouseWheelZoom": true,
+                        "showAttribution": true,
+                        "showDebug": false,
+                        "showScale": false,
+                        "showZoom": true
+                    },
+                    "layers": [
+                        {
+                            "config": {
+                                "color": {
+                                    "fixed": "dark-green"
+                                },
+                                "fillOpacity": 0.4,
+                                "shape": "circle",
+                                "showLegend": true,
+                                "size": {
+                                    "fixed": 5,
+                                    "max": 15,
+                                    "min": 2
+                                }
+                            },
+                            "location": {
+                                "mode": "auto"
+                            },
+                            "type": "markers"
+                        }
+                    ],
+                    "view": {
+                        "id": "coords",
+                        "lat": 25.606689,
+                        "lon": -0.41863,
+                        "zoom": 2.02
+                    }
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tcd.host_name \n\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \n)\n\tselect count(cc.city_name), cc.city_name, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"Continent\" = cc.continent_name and t.\"City\" = cc.city_name)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city_name, cc.latitude, cc.longitude",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Cluster Locations based on Upgrade Timezone (if you do not see your cluster here, add it to the city_coordinates.sql file in conf)",
+                "type": "geomap"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "transparent",
+                            "mode": "fixed"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "color-background"
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "false": {
+                                        "color": "red",
+                                        "index": 0,
+                                        "text": "False"
+                                    },
+                                    "true": {
+                                        "color": "green",
+                                        "index": 1,
+                                        "text": "True"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 14
+                },
+                "id": 12,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select \ncd.host_name,\ncase when cd.upgrade_schedule_days like ('%monday%') then true else false end as \"Monday\",\ncase when cd.upgrade_schedule_days like ('%tuesday%') then true else false end as \"Tuesday\",\ncase when cd.upgrade_schedule_days like ('%wednesday%') then true else false end as \"Wednesday\",\ncase when cd.upgrade_schedule_days like ('%thursday%') then true else false end as \"Thursday\",\ncase when cd.upgrade_schedule_days like ('%friday%') then true else false end as \"Friday\",\ncase when cd.upgrade_schedule_days like ('%saturday%') then true else false end as \"Saturday\",\ncase when cd.upgrade_schedule_days like ('%sunday%') then true else false end as \"Sunday\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Upgrade Schedule Days",
+                "type": "table"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "transparent",
+                            "mode": "fixed"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "color-background",
+                            "filterable": true
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "false": {
+                                        "color": "green",
+                                        "index": 1,
+                                        "text": "Not Pending"
+                                    },
+                                    "true": {
+                                        "color": "red",
+                                        "index": 0,
+                                        "text": "Pending"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 24,
+                    "x": 0,
+                    "y": 22
+                },
+                "id": 8,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "create or replace function count_business_days(from_date date, to_date date)\nreturns bigint\nas $fbd$\n    select count(d::date) as d\n    from generate_series(from_date, to_date, '1 day'::interval) d\n    where extract('dow' from d) not in (0, 6) \n$fbd$ language sql;\n\nselect organization_name, cluster_name, host_name, upgrade_pending, next_upgrade_time from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName) and\n  cd.upgrade_pending = 'true'\n  -- count_business_days(DATE(cd.next_upgrade_time), DATE(now()))  >= 2\norder by next_upgrade_time",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Missed Upgrade",
+                "type": "table"
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "unit": "short"
+                    },
+                    "overrides": []
+                },
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 24,
+                    "x": 0,
+                    "y": 29
+                },
+                "hiddenSeries": false,
+                "id": 6,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select \n  cd.next_upgrade_time as \"time\",\n  cd.host_name,\n  CASE WHEN cd.host_name is not null THEN 1 end as \"Value\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)\norder by cd.next_upgrade_time \n",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "Next Upgrade Schedule",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:263",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:264",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 14,
+                    "w": 7,
+                    "x": 0,
+                    "y": 39
+                },
+                "id": 9,
+                "options": {
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "percent",
+                            "value"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select cd.upgrade_schedule_timezone, count(cd.upgrade_schedule_timezone) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)\ngroup by cd.upgrade_schedule_timezone",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Upgrade Schedule Timezone Distribution",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 14,
+                    "w": 9,
+                    "x": 7,
+                    "y": 39
+                },
+                "id": 4,
+                "options": {
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "percent",
+                            "value"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select release_channel, count(cd.release_channel) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)\ngroup by cd.release_channel ",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Release Channel Distribution",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 14,
+                    "w": 8,
+                    "x": 16,
+                    "y": 39
+                },
+                "id": 14,
+                "options": {
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select t.\"Day\", t.\"Value\" from (\n\t(\n\t\tselect 'Monday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%monday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union \n\t(\n\t\tselect 'Tuesday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%tuesday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Wednesday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%wednesday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Thursday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%thursday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Friday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%friday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Saturday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%saturday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Sunday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%sunday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t)\n)  t",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Distribution of Upgrade Schedule Days",
+                "transformations": [
+                    {
+                        "id": "merge",
+                        "options": {}
+                    }
+                ],
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "auto"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 53
+                },
+                "id": 2,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select * from cluster_details cd\nwhere organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Cluster Details",
+                "type": "table"
+            }
+        ],
+        "refresh": false,
+        "schemaVersion": 30,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct organization_name from organizations o",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Select Organization Name",
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select distinct organization_name from organizations o",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct cluster_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Cluster Name",
+                    "multi": false,
+                    "name": "ClusterName",
+                    "options": [],
+                    "query": "select distinct cluster_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct host_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Host Name",
+                    "multi": false,
+                    "name": "HostName",
+                    "options": [],
+                    "query": "select distinct host_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-6h",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "1. Cluster Details",
+        "uid": "IMEloHXnz",
+        "version": 8
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}

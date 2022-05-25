@@ -1,0 +1,1271 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1653385821526,
+        "links": [],
+        "panels": [
+            {
+                "datasource": null,
+                "gridPos": {
+                    "h": 3,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 26,
+                "options": {
+                    "content": "<center><h1> ${OrganizationName} </center></h1>",
+                    "mode": "html"
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__time(time_column),\n  value1\nFROM\n  metric_table\nWHERE\n  $__timeFilter(time_column)\n",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Organization",
+                "type": "text"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 3
+                },
+                "id": 44,
+                "panels": [],
+                "title": "UDP Destination Cluster Reachability",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "color-background",
+                            "filterable": true
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "0": {
+                                        "color": "red",
+                                        "index": 2,
+                                        "text": "Not Reachable"
+                                    },
+                                    "1": {
+                                        "color": "orange",
+                                        "index": 1,
+                                        "text": "Partially Reachable"
+                                    },
+                                    "2": {
+                                        "color": "green",
+                                        "index": 0,
+                                        "text": "Fully Reachable"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "#ffffff",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 6,
+                    "x": 0,
+                    "y": 4
+                },
+                "id": 10,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "repeat": "ClusterName",
+                "repeatDirection": "h",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select  \n\tdestination_cluster as \"Destination Cluster\", \n\tcase \n\t\twhen ((count(case when reachability = 'true' then 1 else null end) * 100) / count(*)) >= 90 then 2\n\t\twhen (count(case when reachability = 'false' then 1 else null end) = count(*)) then 0\n\t\telse 1\n\tend as \"Reachability\"\nfrom \n(\n\tSELECT r2.cluster_id, r2.cluster_name, r2.destination_cluster, r2.reachability, r2.reachability_type \n\tfrom reachability r2 JOIN organizations o on r2.organization_id  = o.organization_id \n\twhere \n\t\to.organization_name  IN ('$OrganizationName') and\n\t\tr2.cluster_name in ($ClusterName) and\n\t\t$__timeFilter(r2.test_time) and\n\t\tr2.host_name in ($HostName) and\n\t\tr2.reachability_type='udp'\n\torder by r2.destination_cluster \n) t\ngroup by destination_cluster \norder by \"Reachability\" asc",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "UDP Reachability from $ClusterName",
+                "type": "table"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 28
+                },
+                "id": 62,
+                "panels": [],
+                "title": "TCP Destination Cluster Reachability",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "color-background",
+                            "filterable": true
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "0": {
+                                        "color": "red",
+                                        "index": 2,
+                                        "text": "Not Reachable"
+                                    },
+                                    "1": {
+                                        "color": "orange",
+                                        "index": 1,
+                                        "text": "Partially Reachable"
+                                    },
+                                    "2": {
+                                        "color": "green",
+                                        "index": 0,
+                                        "text": "Fully Reachable"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "#ffffff",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 6,
+                    "x": 0,
+                    "y": 29
+                },
+                "id": 14,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "repeat": "ClusterName",
+                "repeatDirection": "h",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select  \n\tdestination_cluster as \"Destination Cluster\", \n\tcase \n\t\twhen ((count(case when reachability = 'true' then 1 else null end) * 100) / count(*)) >= 90 then 2\n\t\twhen (count(case when reachability = 'false' then 1 else null end) = count(*)) then 0\n\t\telse 1\n\tend as \"Reachability\"\nfrom \n(\n\tSELECT r2.cluster_id, r2.cluster_name, r2.destination_cluster, r2.reachability, r2.reachability_type \n\tfrom reachability r2 JOIN organizations o on r2.organization_id  = o.organization_id \n\twhere \n\t\to.organization_name  IN ('$OrganizationName') and\n\t\tr2.cluster_name in ($ClusterName) and\n\t\t$__timeFilter(r2.test_time) and\n\t\tr2.host_name in ($HostName) and\n\t\tr2.reachability_type='tcp'\n\torder by r2.destination_cluster \n) t\ngroup by destination_cluster \norder by \"Reachability\" asc",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "TCP Reachability from $ClusterName",
+                "type": "table"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 53
+                },
+                "id": 80,
+                "panels": [],
+                "title": "UDP Reachable Ports",
+                "type": "row"
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 0,
+                    "y": 54
+                },
+                "hiddenSeries": false,
+                "id": 21,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port > 50000 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "UDP Reachable Ports [50000-53000]",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 12,
+                    "y": 54
+                },
+                "hiddenSeries": false,
+                "id": 7,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port > 50000 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "UDP Not Reachable Ports [50000-53000]",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 0,
+                    "y": 64
+                },
+                "hiddenSeries": false,
+                "id": 5,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port = 5004 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "UDP Reachable Port [5004]",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 12,
+                    "y": 64
+                },
+                "hiddenSeries": false,
+                "id": 22,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port = 5004 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "UDP Not Reachable Port [5004]",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 74
+                },
+                "id": 98,
+                "panels": [],
+                "title": "TCP Reachable Ports",
+                "type": "row"
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 0,
+                    "y": 75
+                },
+                "hiddenSeries": false,
+                "id": 6,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'tcp' and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'tcp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "TCP Reachable Ports",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": null,
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 12,
+                    "y": 75
+                },
+                "hiddenSeries": false,
+                "id": 8,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'tcp' and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'tcp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "TCP Not Reachable Ports",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 85
+                },
+                "id": 108,
+                "panels": [],
+                "title": "UDP Reachability Details",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "auto",
+                            "filterable": true
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 11,
+                    "w": 24,
+                    "x": 0,
+                    "y": 86
+                },
+                "id": 2,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select r.timestamp, r.from_time, r.to_time, o.organization_name, r.cluster_name, r.host_name, r.destination_cluster, r.test_time, r.reachability_type, r.port, r.reachability\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_time)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "UDP Reachability",
+                "transformations": [],
+                "type": "table"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 97
+                },
+                "id": 118,
+                "panels": [],
+                "title": "TCP Reachability Details",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "auto",
+                            "filterable": true
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 11,
+                    "w": 24,
+                    "x": 0,
+                    "y": 98
+                },
+                "id": 3,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select r.timestamp, r.from_time, r.to_time, o.organization_name, r.cluster_name, r.host_name, r.destination_cluster, r.test_time, r.reachability_type, r.port, r.reachability\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_time)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "TCP Reachability",
+                "transformations": [],
+                "type": "table"
+            }
+        ],
+        "refresh": false,
+        "schemaVersion": 30,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct organization_name from organizations",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Select Organization Name",
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select distinct organization_name from organizations",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct cluster_name from reachability r  join organizations o \non o.organization_id = r.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Cluster Name",
+                    "multi": false,
+                    "name": "ClusterName",
+                    "options": [],
+                    "query": "select distinct cluster_name from reachability r  join organizations o \non o.organization_id = r.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct host_name from reachability r join organizations o \non o.organization_id = r.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Host Name",
+                    "multi": false,
+                    "name": "HostName",
+                    "options": [],
+                    "query": "select distinct host_name from reachability r join organizations o \non o.organization_id = r.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct destination_cluster from reachability r",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Destination Cluster",
+                    "multi": false,
+                    "name": "DestinationCluster",
+                    "options": [],
+                    "query": "select distinct destination_cluster from reachability r",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-6h",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "8. Reachability",
+        "uid": "8zM3cyw7k",
+        "version": 3
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}

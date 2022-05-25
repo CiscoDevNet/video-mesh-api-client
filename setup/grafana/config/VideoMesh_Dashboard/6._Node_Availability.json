@@ -1,0 +1,328 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1653037913346,
+        "links": [],
+        "panels": [
+            {
+                "datasource": null,
+                "gridPos": {
+                    "h": 3,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 2,
+                "options": {
+                    "content": "<center><h1> ${OrganizationName} </center></h1>",
+                    "mode": "html"
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__time(time_column),\n  value1\nFROM\n  metric_table\nWHERE\n  $__timeFilter(time_column)\n",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Organization",
+                "type": "text"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "fixed"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 25,
+                    "w": 24,
+                    "x": 0,
+                    "y": 3
+                },
+                "id": 6,
+                "options": {
+                    "colorByField": "availability",
+                    "colors": [
+                        {
+                            "color": "green",
+                            "text": "Available"
+                        },
+                        {
+                            "color": "#00000000",
+                            "text": "No data available"
+                        },
+                        {
+                            "color": "#C4162A",
+                            "text": "Unavailable"
+                        },
+                        {
+                            "color": "#FF9830",
+                            "text": "Partially Available"
+                        }
+                    ],
+                    "endField": "segment_end_time",
+                    "experiments": {},
+                    "labelFields": [
+                        "availability"
+                    ],
+                    "showYAxis": true,
+                    "sortBy": "startTime",
+                    "sortOrder": "asc",
+                    "startField": "segment_start_time",
+                    "textField": "host_name"
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select \n  timestamp as \"time\", \n  host_name, \n  availability, \n  segment_start_time, \n  segment_end_time \nfrom node_availability na join organizations o on na.organization_id = o.organization_id\nwhere \n  $__timeFilter(segment_start_time) and\n  o.organization_name in ('$OrganizationName') and \n  cluster_name in ($ClusterName) and \n  host_name in ($HostName)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Node Availability",
+                "type": "marcusolsson-gantt-panel"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "auto",
+                            "filterable": true
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 11,
+                    "w": 24,
+                    "x": 0,
+                    "y": 28
+                },
+                "id": 4,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select * from node_availability na \nwhere \n  $__timeFilter(segment_start_time) and \n  organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Node Availability Details",
+                "type": "table"
+            }
+        ],
+        "refresh": "",
+        "schemaVersion": 30,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct organization_name from organizations",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Select Organization Name",
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select distinct organization_name from organizations",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct cluster_name from node_availability na join organizations o \non o.organization_id = na.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Cluster Name",
+                    "multi": false,
+                    "name": "ClusterName",
+                    "options": [],
+                    "query": "select distinct cluster_name from node_availability na join organizations o \non o.organization_id = na.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct host_name from node_availability na join organizations o\non o.organization_id = na.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Host Name",
+                    "multi": false,
+                    "name": "HostName",
+                    "options": [],
+                    "query": "select distinct host_name from node_availability na join organizations o\non o.organization_id = na.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-7d",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "6. Node Availability",
+        "uid": "7a3E91s7z",
+        "version": 4
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}
