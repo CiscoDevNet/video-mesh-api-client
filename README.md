@@ -1,6 +1,6 @@
-# VideoMesh API Application
+# Video Mesh API Client
 
-An example of a 3rd party application built using the Webex VideoMesh APIs.
+An example of a 3rd party application built using the Webex Video Mesh APIs.
 
 The application is a simple simulation of how the APIs can be used to track organization data and retrieves and displays data such as Cluster Details, Cluster and Node Availability, Cluster Utilization, Call Redirects and Overflows, Media Health Monitoring and Reachability Test Results.
 
@@ -25,7 +25,7 @@ The application is a simple simulation of how the APIs can be used to track orga
     - `REDIRECT_URI`: If your application performs the OAuth flow on a different API route or port number, you can make the required changes here.
     - `DATABASE_`: You can change the database credentials if you want to run the server using a different database. 
 6. The TimescaleDB data is persisted to disk in the `/timescale_data` directory on the host machine, which is mapped to a volume on the container to prevent successive builds from losing data. Ensure this directory exists on your machine. Alternatively, if you would like to use a different folder to persist your data, you can change the `/timescale_data` path in `docker-compose.yml`.
-7. Navigate to `docker/` and run `docker-compose --project-name videomesh-api-dashboard up -d` to build and start the application
+7. Navigate to `docker/` and run `docker-compose --project-name video-mesh-api-client up -d` to build and start the application
 8. Visit the OAuth Authorization URL obtained while creating the Integration on the Integration app page and authorize the application. You will be redirected to the `localhost:2808/oauth` (or your OAuth URL) for authentication. Once verified, it will show that you have granted access to the application.
     - **Note**: *Once you restart the application container, the authentication flow needs to be completed again*.
 9. Visit `http://localhost:3000` (or the port number you deployed the Grafana container on) to see the Grafana application. Log in using `admin` as the username and password.
