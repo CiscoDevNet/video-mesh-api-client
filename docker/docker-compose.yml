@@ -6,6 +6,8 @@ services:
     ports:
       - "2808:2808"
     container_name: flask
+    links:
+      - timescale
   grafana:
     build:
       context: ..
