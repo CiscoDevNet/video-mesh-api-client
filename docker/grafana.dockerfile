@@ -13,7 +13,7 @@ COPY ../setup/grafana/ setup/grafana/
 COPY ../.env .env
 
 # Setup Grafana depoenencies
-RUN pip3 install requests python_dotenv
+RUN pip3 install requests python-dotenv
 RUN ./grafana-8.1.8/bin/grafana-cli plugins install grafana-piechart-panel
 RUN ./grafana-8.1.8/bin/grafana-cli plugins install aidanmountford-html-panel
 RUN ./grafana-8.1.8/bin/grafana-cli plugins install goshposh-metaqueries-datasource

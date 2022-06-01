@@ -18,7 +18,7 @@ The application is a simple simulation of how the APIs can be used to track orga
     - Scopes: 
         - `spark:organizations_read`: To allow access to read your user's organizations
         - `spark-admin:hybrid_connectors_read`: To allow access to read hybrid connectors for your organization
-    - Redirect URI: `https://localhost:2808/oauth/`: You can change the route and port number as needed, ensure to propagate these changes in the subsequent steps
+    - Redirect URI: `http://localhost:2808/oauth/`: You can change the route and port number as needed, ensure to propagate these changes in the subsequent steps
 5. A `.env` file template has been provided. Add your Webex App Integration Client ID (`INTEGRATION_CLIENT_ID`) and Client Secret (`INTEGRATION_CLIENT_SECRET`)  to this file. Additionally, you can modify the following variables:
     - `GRAFANA_URL`: You can change the port number if you want to run the server on a different port. Remember to reflect this change in `docker-compose.yml`
     - `GRAFANA_API_KEY`: Leave this field empty for now since we need to deploy the server to obtain a key.
@@ -47,6 +47,18 @@ The application is a simple simulation of how the APIs can be used to track orga
     - **The access token is valid for 14 days, and is refreshed every 12 days automatically within the application to ensure the application remains running indefinitely**.
 
 2. Each time the application container is restarted, the authentication flow mentioned in step 8 needs to be completed again.
+
+## Restarting the Application
+
+If the host machine is shut down, the application will stop running. To restart the application, run `docker-compose --project-name video-mesh-api-client up -d` in the `docker/` directory. This will restart all the containers and the application will be running. Note that the application will not be able to access the APIs until the authentication flow mentioned in step 8 is completed again.
+
+## Adding more Organizations
+
+Since the access token generated through the OAuth flow provides access to only the organizations the user has access to, the only way to add more organizations is to create another container for the application and authenticate it as a different user which has access to those organizations. To setup the application for different organizations, you need to follow the steps below:
+
+1. Remove all the containers and images created by the application. You can use `docker container ls` to find the container ID of the application containers and `docker image ls` to find the image ID of the application images. You can use `docker container rm <CONTAINER_ID>` to remove the containers and `docker image rm <IMAGE_ID>` to remove the images.
+2. The data is persisted to disk in the `/timescale_data` directory on the host machine. You can choose to either retain the Timescale data from the previous organizations or delete it. If you would like to create a new instance of the application without any previous data, run `rm -rf /timescale_data` to delete the data.
+3. Setup the application again, including the OAuth Webex Integration with another user account (following from step 2 of how to setup the application).
 
 ## Disclaimer
 
