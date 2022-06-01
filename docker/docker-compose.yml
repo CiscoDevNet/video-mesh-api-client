@@ -29,4 +29,4 @@ services:
       - POSTGRES_DB=postgres
     volumes:
       - ../timescale_data:/var/lib/postgresql/data
-    container_name: timescale
+    container_name: videoMeshTimescaleDB
