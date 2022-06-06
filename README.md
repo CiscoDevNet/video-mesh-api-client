@@ -32,12 +32,13 @@ The application is a simple simulation of how the APIs can be used to track orga
 10. Click on the `Settings` icon on the left sidebar and click on `API Keys`. Click on `New API Key` and create a new key with the `Admin` role. Copy and note down this key.
 11. Find the container ID of the Grafana container by running `docker container ls`
 12. Open a new shell in the Grafana container using `docker exec -it <CONTAINER_ID> bash`
-13. Use `vi .env` to edit the `.env` file and now add the `GRAFANA_API_KEY` variable. Save and exit.
+    - Use `vi .env` to edit the `.env` file and now add the `GRAFANA_API_KEY` variable. Save and exit.
     
-    ```sh
-    GRAFANA_API_KEY="<your copied Grafana API key>"
-    ```
-14. Run `./setup/grafana/setup_grafana.sh` to import all the dashboards and data sources. If no errors occur, it means that Grafana has been successfully setup.
+        ```sh
+        GRAFANA_API_KEY="<your copied Grafana API key>"
+        ```
+    - Run `./setup/grafana/setup_grafana.sh` to import all the dashboards and data sources. If no errors occur, it means that Grafana has been successfully setup.
+    - Exit the container using `exit`
 15. Restart the Grafana container using `docker restart <CONTAINER_ID>`
 16. Once restarted, all the visualizations will be available.
 
