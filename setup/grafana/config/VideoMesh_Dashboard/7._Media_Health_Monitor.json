@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -72,7 +72,7 @@
                 "type": "text"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -235,7 +235,7 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -398,7 +398,7 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -561,7 +561,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -574,7 +574,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -716,7 +716,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -735,7 +735,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -884,7 +884,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -897,7 +897,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1037,7 +1037,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -1056,7 +1056,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -1205,7 +1205,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -1218,7 +1218,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1358,7 +1358,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -1377,7 +1377,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -1526,7 +1526,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -1539,7 +1539,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1623,7 +1623,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -1647,7 +1647,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from media_health_monitoring_tool mhmt join organizations o \non o.organization_id = mhmt.organization_id \nwhere organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -1671,7 +1671,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct host_name from media_health_monitoring_tool mhmt join organizations o \non o.organization_id = mhmt.organization_id \nwhere cluster_name in ($ClusterName)",
                     "description": null,
                     "error": null,
@@ -1695,7 +1695,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "7. Media Health Monitor",
         "uid": "yNYJ9oy7z",
         "version": 3

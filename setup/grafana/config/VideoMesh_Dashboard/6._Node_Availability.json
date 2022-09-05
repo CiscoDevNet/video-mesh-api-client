@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -72,7 +72,7 @@
                 "type": "text"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -162,7 +162,7 @@
                 "type": "marcusolsson-gantt-panel"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -246,7 +246,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -270,7 +270,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from node_availability na join organizations o \non o.organization_id = na.organization_id \nwhere organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -294,7 +294,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct host_name from node_availability na join organizations o\non o.organization_id = na.organization_id \nwhere cluster_name in ($ClusterName)",
                     "description": null,
                     "error": null,
@@ -318,7 +318,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "6. Node Availability",
         "uid": "7a3E91s7z",
         "version": 4

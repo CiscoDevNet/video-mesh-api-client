@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -72,7 +72,7 @@
                 "type": "text"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -163,7 +163,7 @@
                 "type": "marcusolsson-gantt-panel"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -261,7 +261,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -285,7 +285,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from cluster_availability ca join organizations o on o.organization_id = ca.organization_id  where o.organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -309,7 +309,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "2. Cluster Availability",
         "uid": "fIoA5ks7k",
         "version": 2

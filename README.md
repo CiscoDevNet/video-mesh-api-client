@@ -17,7 +17,7 @@ The application is a simple simulation of how the APIs can be used to track orga
 4. Create a [Webex App Integration](https://developer.webex.com/docs/integrations) and set the following:
     - Scopes: 
         - `spark:organizations_read`: To allow access to read your user's organizations
-        - `spark-admin:hybrid_connectors_read`: To allow access to read hybrid connectors for your organization
+        - `spark-admin:video_mesh_api_read`: To retrieve analytics and monitoring data of Video Mesh deployments
     - Redirect URI: `http://localhost:2808/oauth/`: You can change the route and port number as needed, ensure to propagate these changes in the subsequent steps
 5. A `.env` file template has been provided. Add your Webex App Integration Client ID (`INTEGRATION_CLIENT_ID`) and Client Secret (`INTEGRATION_CLIENT_SECRET`)  to this file. Additionally, you can modify the following variables:
     - `GRAFANA_URL`: You can change the port number if you want to run the server on a different port. Remember to reflect this change in `docker-compose.yml`
@@ -25,6 +25,7 @@ The application is a simple simulation of how the APIs can be used to track orga
     - `REDIRECT_URI`: If your application performs the OAuth flow on a different API route or port number, you can make the required changes here.
     - `DATABASE_`: You can change the database credentials if you want to run the server using a different database. 
 6. The TimescaleDB data is persisted to disk in the `/timescale_data` directory on the host machine, which is mapped to a volume on the container to prevent successive builds from losing data. Ensure this directory exists on your machine. Alternatively, if you would like to use a different folder to persist your data, you can change the `/timescale_data` path in `docker-compose.yml`.
+    - **Note**: The default `retention policy` is 30 days and chunk interval is 24 hours (Refer to [Timescale Docs](https://docs.timescale.com/timescaledb/latest/how-to-guides/data-retention/create-a-retention-policy/ " ") for more details on this). If you want to change these default values for retention policy and chunk interval, please make the changes mentioned in [retention policy](#retention-policy) section before performing any further steps.
 7. Navigate to `docker/` and run `docker-compose --project-name video-mesh-api-client up -d` to build and start the application
 8. Visit the OAuth Authorization URL obtained while creating the Integration on the Integration app page and authorize the application. You will be redirected to the `localhost:2808/oauth` (or your OAuth URL) for authentication. Once verified, it will show that you have granted access to the application.
     - **Note**: *Once you restart the application container, the authentication flow needs to be completed again*.
@@ -41,6 +42,17 @@ The application is a simple simulation of how the APIs can be used to track orga
     - Exit the container using `exit`
 15. Restart the Grafana container using `docker restart <CONTAINER_ID>`
 16. Once restarted, all the visualizations will be available.
+
+## Retention Policy
+- If you want to change the default value before the setup or modify (once the app is deployed and running already) the retention period, you need to edit `/setup/sql/ddl.sql` file.
+    - In case you want to change the default retention policy, modify the add_retention_policy `interval` in `/setup/sql/ddl.sql`.
+    - In case you want to modify already existing policies, you need to add the below commands in `/setup/sql/ddl.sql`:
+        ```
+        SELECT remove_retention_policy('<Table_name>');`
+        SELECT add_retention_policy('<Table_name>', INTERVAL '60 days');
+        ```
+      then, re-create the images (re-deploy the app) without deleting the local timescale db (`/timescale_data`) in the host machine.
+- **Note**: There shouldn't be any extra line at the end of ddl.sql file.
 
 ## Scopes and Authentication 
 

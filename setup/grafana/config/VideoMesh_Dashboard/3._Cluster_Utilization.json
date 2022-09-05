@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -73,7 +73,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -90,7 +90,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -201,7 +201,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -218,7 +218,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -329,7 +329,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -346,7 +346,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -455,7 +455,7 @@
                 }
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -499,7 +499,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cu.timestamp, o.organization_name, cu.measure_time, cu.cluster_name, cu.peak_cpu, cu.avg_cpu, cu.active_calls from cluster_utlization cu join organizations o on cu.organization_id = o.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)",
+                        "rawSql": "select cu.timestamp as \"Timestamp\", o.organization_name as \"Organization Name\", cu.measure_time as \"Measure Time\", cu.cluster_name as \"Cluster Name\", cu.peak_cpu as \"Peak CPU\", cu.avg_cpu as \"Average CPU\", cu.active_calls as \"Active Calls\" from cluster_utlization cu join organizations o on cu.organization_id = o.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)",
                         "refId": "A",
                         "select": [
                             [
@@ -540,7 +540,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -564,7 +564,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from cluster_utlization cu join organizations o on o.organization_id = cu.organization_id  where organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -588,7 +588,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "3. Cluster Utilization",
         "uid": "01idVCQ7z",
         "version": 4
