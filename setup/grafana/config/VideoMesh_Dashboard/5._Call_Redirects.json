@@ -494,7 +494,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select o.organization_name as \"Organization Name\", cr.cluster_name as \"Cluster Name\", cr.redirect_time as \"Redirect Time\", cr.redirect_count as \"Redirect Count\", cr.reason as \"Reason\", cr.remediation as \"Remediation\"\nfrom call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere o.organization_name in ('$OrganizationName') and cr.cluster_name in ('$ClusterName')",
+                        "rawSql": "select cr.organization_id as \"Organization ID\", cr.cluster_name as \"Cluster Name\", cr.redirect_time as \"Redirect Time\", cr.redirect_count as \"Redirect Count\", cr.reason as \"Reason\", cr.remediation as \"Remediation\"\nfrom call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere o.organization_name in ('$OrganizationName') and cr.cluster_name in ('$ClusterName')",
                         "refId": "A",
                         "select": [
                             [

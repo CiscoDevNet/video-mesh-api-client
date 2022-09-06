@@ -499,7 +499,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cu.timestamp as \"Timestamp\", o.organization_name as \"Organization Name\", cu.measure_time as \"Measure Time\", cu.cluster_name as \"Cluster Name\", cu.peak_cpu as \"Peak CPU\", cu.avg_cpu as \"Average CPU\", cu.active_calls as \"Active Calls\" from cluster_utlization cu join organizations o on cu.organization_id = o.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)",
+                        "rawSql": "select cu.timestamp as \"Timestamp\", cu.organization_id as \"Organization ID\", cu.measure_time as \"Response Timestamp\", cu.cluster_name as \"Cluster Name\", cu.peak_cpu as \"Peak CPU\", cu.avg_cpu as \"Average CPU\", cu.active_calls as \"Active Calls\" from cluster_utlization cu join organizations o on cu.organization_id = o.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)",
                         "refId": "A",
                         "select": [
                             [

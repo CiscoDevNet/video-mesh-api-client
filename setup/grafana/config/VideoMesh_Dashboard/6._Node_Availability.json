@@ -207,7 +207,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select * from node_availability na \nwhere \n  $__timeFilter(segment_start_time) and \n  organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)",
+                        "rawSql": "select timestamp as \"Timestamp\", organization_id as \"Organization ID\", cluster_id as \"Cluster ID\", cluster_name as \"Cluster Name\", node_id as \"Node ID\", host_name as \"Host Name\", availability as \"Availability\", segment_start_time as \"Segment Start Time\", segment_end_time as \"Segment End Time\" from node_availability na \nwhere \n  $__timeFilter(segment_start_time) and \n  organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)",
                         "refId": "A",
                         "select": [
                             [

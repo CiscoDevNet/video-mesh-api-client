@@ -1584,7 +1584,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select * from media_health_monitoring_tool where $__timeFilter(test_time) and host_name in ($HostName)",
+                        "rawSql": "select timestamp as \"Timestamp\", organization_id as \"Organization ID\", cluster_id as \"Cluster ID\", cluster_name as \"Cluster Name\", node_id as \"Node ID\", host_name as \"Host Name\", test_time as \"Test Time\", test_name as \"Test Name\", test_result as \"Test Result\", failure_reason as \"Failure Reason\" from media_health_monitoring_tool where $__timeFilter(test_time) and host_name in ($HostName)",
                         "refId": "A",
                         "select": [
                             [

@@ -1039,7 +1039,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select r.timestamp as \"Timestamp\", r.from_time as \"From Time\", r.to_time as \"To Time\", o.organization_name as \"Organization Time\", r.cluster_name as \"Cluster_Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_time)",
+                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster_Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_time)",
                         "refId": "A",
                         "select": [
                             [
@@ -1125,7 +1125,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select r.timestamp as \"Timestamp\", r.from_time as \"From Time\", r.to_time as \"To Time\", o.organization_name as \"Organization Name\", r.cluster_name as \"Cluster Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_time)",
+                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_time)",
                         "refId": "A",
                         "select": [
                             [
