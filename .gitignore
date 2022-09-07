@@ -1,5 +1,8 @@
 __pycache__/
 *log
 .object_count
-.DS_Store/
+.DS_Store
+.idea/
 timescale_data/
+venv/
+vm_*/

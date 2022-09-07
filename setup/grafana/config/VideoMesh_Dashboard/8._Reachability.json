@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -73,7 +73,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -86,7 +86,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -177,7 +177,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -190,7 +190,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -281,7 +281,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -298,7 +298,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -410,7 +410,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -522,7 +522,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -634,7 +634,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -743,7 +743,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -760,7 +760,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -872,7 +872,7 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -981,7 +981,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -994,7 +994,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1039,7 +1039,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select r.timestamp, r.from_time, r.to_time, o.organization_name, r.cluster_name, r.host_name, r.destination_cluster, r.test_time, r.reachability_type, r.port, r.reachability\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_time)",
+                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster_Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_time)",
                         "refId": "A",
                         "select": [
                             [
@@ -1067,7 +1067,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -1080,7 +1080,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1125,7 +1125,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select r.timestamp, r.from_time, r.to_time, o.organization_name, r.cluster_name, r.host_name, r.destination_cluster, r.test_time, r.reachability_type, r.port, r.reachability\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_time)",
+                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_time)",
                         "refId": "A",
                         "select": [
                             [
@@ -1165,7 +1165,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -1189,7 +1189,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from reachability r  join organizations o \non o.organization_id = r.organization_id \nwhere organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -1213,7 +1213,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct host_name from reachability r join organizations o \non o.organization_id = r.organization_id \nwhere cluster_name in ($ClusterName)",
                     "description": null,
                     "error": null,
@@ -1237,7 +1237,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct destination_cluster from reachability r",
                     "description": null,
                     "error": null,
@@ -1261,7 +1261,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "8. Reachability",
         "uid": "8zM3cyw7k",
         "version": 3

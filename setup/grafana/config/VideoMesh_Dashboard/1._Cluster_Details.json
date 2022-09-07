@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -72,7 +72,7 @@
                 "type": "text"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -90,10 +90,194 @@
                     "overrides": []
                 },
                 "gridPos": {
-                    "h": 11,
+                    "h": 9,
                     "w": 10,
                     "x": 0,
                     "y": 3
+                },
+                "id": 22,
+                "options": {
+                    "legend": {
+                        "displayMode": "list",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select nd.deployment_type,\ncount(nd.deployment_type) as \"Value\"\nfrom node_details nd join organizations o on o.organization_id = nd.organization_id\njoin cluster_details cd on cd.node_id = nd.node_id\nwhere organization_name in ('$OrganizationName') and\ncd.cluster_name in (select cluster_name from cluster_details where cluster_name in ($ClusterName)) and \nnd.host_name in (select host_name from node_details where host_name in ($HostName))\ngroup by nd.deployment_type\n",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                      "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                              "name": "$__timeFilter",
+                              "params": [],
+                              "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Node Distribution based on Deployment Type",
+                "type": "piechart"
+            },
+            {
+                "datasource": "TimescaleDB",
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                          "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 9,
+                        "w": 14,
+                        "x": 10,
+                        "y": 3
+                    },
+                    "id": 20,
+                    "options": {
+                        "basemap": {
+                            "config": {},
+                            "type": "osm-standard"
+                        },
+                        "controls": {
+                            "mouseWheelZoom": true,
+                            "showAttribution": true,
+                            "showDebug": false,
+                            "showScale": false,
+                            "showZoom": true
+                        },
+                        "layers": [
+                            {
+                                "config": {
+                                    "color": {
+                                    "fixed": "dark-green"
+                                    },
+                                    "fillOpacity": 0.4,
+                                    "shape": "circle",
+                                    "showLegend": true,
+                                    "size": {
+                                        "field": "count",
+                                        "fixed": 5,
+                                        "max": 30,
+                                        "min": 5
+                                    }
+                                },
+                                "location": {
+                                  "mode": "auto"
+                                },
+                                "type": "markers"
+                            }
+                        ],
+                        "view": {
+                            "id": "coords",
+                            "lat": 25.606689,
+                            "lon": -0.41863,
+                            "zoom": 2.05
+                        }
+                    },
+                    "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(nd.timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(nd.timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tnd.host_name \n\tfrom node_details nd join organizations o on o.organization_id = nd.organization_id \n\tjoin cluster_details cd on cd.node_id = nd.node_id\n)\n\tselect count(cc.city_name), cc.city_name, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"City\" = cc.city_name)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city_name, cc.latitude, cc.longitude",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                      "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Node Location Geographical View",
+                "type": "geomap"
+            },
+            {
+                "datasource": "TimescaleDB",
+                "fieldConfig": {
+                  "defaults": {
+                      "color": {
+                        "mode": "palette-classic"
+                      },
+                      "custom": {
+                        "hideFrom": {
+                          "legend": false,
+                          "tooltip": false,
+                          "viz": false
+                        }
+                      },
+                      "mappings": []
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                    "h": 11,
+                    "w": 10,
+                    "x": 0,
+                    "y": 12
                 },
                 "id": 10,
                 "options": {
@@ -123,7 +307,8 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cd.cluster_name, count(cd.cluster_name) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)\ngroup by cd.cluster_name",
+                        "rawSql": "select cd.cluster_name, count(cd.cluster_name) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nnd.host_name in ($HostName)\ngroup by cd.cluster_name",
+
                         "refId": "A",
                         "select": [
                             [
@@ -147,11 +332,11 @@
                         ]
                     }
                 ],
-                "title": "Number of Nodes Distribution",
+                "title": "Nodes Distribution across Clusters",
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "description": "",
                 "fieldConfig": {
                     "defaults": {
@@ -176,10 +361,10 @@
                     "overrides": []
                 },
                 "gridPos": {
-                    "h": 11,
+                    "h": 12,
                     "w": 14,
                     "x": 10,
-                    "y": 3
+                    "y": 12
                 },
                 "id": 16,
                 "options": {
@@ -204,9 +389,10 @@
                                 "shape": "circle",
                                 "showLegend": true,
                                 "size": {
+                                    "field": "count",
                                     "fixed": 5,
-                                    "max": 15,
-                                    "min": 2
+                                    "max": 30,
+                                    "min": 5
                                 }
                             },
                             "location": {
@@ -230,7 +416,7 @@
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tcd.host_name \n\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \n)\n\tselect count(cc.city_name), cc.city_name, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"Continent\" = cc.continent_name and t.\"City\" = cc.city_name)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city_name, cc.latitude, cc.longitude",
+                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tnd.host_name \n\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \n\tjoin node_details nd on nd.node_id = cd.node_id\n)\n\tselect count(cc.city_name), cc.city_name, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"Continent\" = cc.continent_name and t.\"City\" = cc.city_name)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city_name, cc.latitude, cc.longitude",
                         "refId": "A",
                         "select": [
                             [
@@ -258,7 +444,7 @@
                 "type": "geomap"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -306,7 +492,7 @@
                     "h": 8,
                     "w": 24,
                     "x": 0,
-                    "y": 14
+                    "y": 24
                 },
                 "id": 12,
                 "options": {
@@ -319,7 +505,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select \ncd.host_name,\ncase when cd.upgrade_schedule_days like ('%monday%') then true else false end as \"Monday\",\ncase when cd.upgrade_schedule_days like ('%tuesday%') then true else false end as \"Tuesday\",\ncase when cd.upgrade_schedule_days like ('%wednesday%') then true else false end as \"Wednesday\",\ncase when cd.upgrade_schedule_days like ('%thursday%') then true else false end as \"Thursday\",\ncase when cd.upgrade_schedule_days like ('%friday%') then true else false end as \"Friday\",\ncase when cd.upgrade_schedule_days like ('%saturday%') then true else false end as \"Saturday\",\ncase when cd.upgrade_schedule_days like ('%sunday%') then true else false end as \"Sunday\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)",
+                        "rawSql": "select \nnd.host_name as \"Host Name\",\ncase when cd.upgrade_schedule_days like ('%monday%') then true else false end as \"Monday\",\ncase when cd.upgrade_schedule_days like ('%tuesday%') then true else false end as \"Tuesday\",\ncase when cd.upgrade_schedule_days like ('%wednesday%') then true else false end as \"Wednesday\",\ncase when cd.upgrade_schedule_days like ('%thursday%') then true else false end as \"Thursday\",\ncase when cd.upgrade_schedule_days like ('%friday%') then true else false end as \"Friday\",\ncase when cd.upgrade_schedule_days like ('%saturday%') then true else false end as \"Saturday\",\ncase when cd.upgrade_schedule_days like ('%sunday%') then true else false end as \"Sunday\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cd.cluster_name in ($ClusterName) and\n  nd.host_name in ($HostName)",
                         "refId": "A",
                         "select": [
                             [
@@ -347,7 +533,7 @@
                 "type": "table"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -396,7 +582,7 @@
                     "h": 7,
                     "w": 24,
                     "x": 0,
-                    "y": 22
+                    "y": 32
                 },
                 "id": 8,
                 "options": {
@@ -410,7 +596,7 @@
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "create or replace function count_business_days(from_date date, to_date date)\nreturns bigint\nas $fbd$\n    select count(d::date) as d\n    from generate_series(from_date, to_date, '1 day'::interval) d\n    where extract('dow' from d) not in (0, 6) \n$fbd$ language sql;\n\nselect organization_name, cluster_name, host_name, upgrade_pending, next_upgrade_time from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName) and\n  cd.upgrade_pending = 'true'\n  -- count_business_days(DATE(cd.next_upgrade_time), DATE(now()))  >= 2\norder by next_upgrade_time",
+                        "rawSql": "create or replace function count_business_days(from_date date, to_date date)\nreturns bigint\nas $fbd$\n    select count(d::date) as d\n    from generate_series(from_date, to_date, '1 day'::interval) d\n    where extract('dow' from d) not in (0, 6) \n$fbd$ language sql;\n\nselect cd.organization_id as \"Organization ID\", cd.cluster_name as \"Cluster Name\", nd.host_name as \"Host Name\", cd.upgrade_pending as \"Upgrade Pending\", cd.next_upgrade_time as \"Next Upgrade Time\"  from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName) and\n  cd.upgrade_pending = 'true'\n  -- count_business_days(DATE(cd.next_upgrade_time), DATE(now()))  >= 2\norder by next_upgrade_time",
                         "refId": "B",
                         "select": [
                             [
@@ -438,59 +624,52 @@
                 "type": "table"
             },
             {
-                "aliasColors": {},
-                "bars": false,
-                "dashLength": 10,
-                "dashes": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "auto"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
                         "unit": "short"
                     },
                     "overrides": []
                 },
-                "fill": 1,
-                "fillGradient": 0,
                 "gridPos": {
                     "h": 10,
                     "w": 24,
                     "x": 0,
-                    "y": 29
+                    "y": 39
                 },
-                "hiddenSeries": false,
                 "id": 6,
-                "legend": {
-                    "alignAsTable": false,
-                    "avg": false,
-                    "current": false,
-                    "max": false,
-                    "min": false,
-                    "show": true,
-                    "total": false,
-                    "values": false
-                },
-                "lines": false,
-                "linewidth": 1,
-                "nullPointMode": "null",
                 "options": {
-                    "alertThreshold": true
+                    "showHeader": true
                 },
-                "percentage": false,
                 "pluginVersion": "8.1.8",
-                "pointradius": 2,
-                "points": true,
-                "renderer": "flot",
-                "seriesOverrides": [],
-                "spaceLength": 10,
-                "stack": false,
-                "steppedLine": false,
                 "targets": [
                     {
-                        "format": "time_series",
+                        "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select \n  cd.next_upgrade_time as \"time\",\n  cd.host_name,\n  CASE WHEN cd.host_name is not null THEN 1 end as \"Value\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName)\norder by cd.next_upgrade_time \n",
+                        "rawSql": "select \n  nd.host_name as \"Host name or IP\",\n  cd.next_upgrade_time as \"Next Upgrade Time\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cd.cluster_name in ($ClusterName) and\n  nd.host_name in ($HostName)\norder by cd.next_upgrade_time \n",
                         "refId": "A",
                         "select": [
                             [
@@ -514,51 +693,13 @@
                         ]
                     }
                 ],
-                "thresholds": [],
                 "timeFrom": null,
-                "timeRegions": [],
                 "timeShift": null,
                 "title": "Next Upgrade Schedule",
-                "tooltip": {
-                    "shared": true,
-                    "sort": 0,
-                    "value_type": "individual"
-                },
-                "type": "graph",
-                "xaxis": {
-                    "buckets": null,
-                    "mode": "time",
-                    "name": null,
-                    "show": true,
-                    "values": []
-                },
-                "yaxes": [
-                    {
-                        "$$hashKey": "object:263",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    },
-                    {
-                        "$$hashKey": "object:264",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    }
-                ],
-                "yaxis": {
-                    "align": false,
-                    "alignLevel": null
-                }
+                "type": "table"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -579,7 +720,7 @@
                     "h": 14,
                     "w": 7,
                     "x": 0,
-                    "y": 39
+                    "y": 49
                 },
                 "id": 9,
                 "options": {
@@ -609,7 +750,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cd.upgrade_schedule_timezone, count(cd.upgrade_schedule_timezone) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)\ngroup by cd.upgrade_schedule_timezone",
+                        "rawSql": "select cd.upgrade_schedule_timezone, count(cd.upgrade_schedule_timezone) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere organization_name in ('$OrganizationName') and\ncd.cluster_name in ($ClusterName) and\nnd.host_name in ($HostName)\ngroup by cd.upgrade_schedule_timezone",
                         "refId": "A",
                         "select": [
                             [
@@ -637,7 +778,7 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -658,7 +799,7 @@
                     "h": 14,
                     "w": 9,
                     "x": 7,
-                    "y": 39
+                    "y": 49
                 },
                 "id": 4,
                 "options": {
@@ -688,7 +829,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select release_channel, count(cd.release_channel) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)\ngroup by cd.release_channel ",
+                        "rawSql": "select release_channel, count(cd.release_channel) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere organization_name in ('$OrganizationName') and\ncd.cluster_name in ($ClusterName) and\nnd.host_name in ($HostName)\ngroup by cd.release_channel ",
                         "refId": "A",
                         "select": [
                             [
@@ -716,7 +857,7 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -737,7 +878,7 @@
                     "h": 14,
                     "w": 8,
                     "x": 16,
-                    "y": 39
+                    "y": 49
                 },
                 "id": 14,
                 "options": {
@@ -768,7 +909,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select t.\"Day\", t.\"Value\" from (\n\t(\n\t\tselect 'Monday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%monday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union \n\t(\n\t\tselect 'Tuesday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%tuesday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Wednesday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%wednesday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Thursday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%thursday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Friday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%friday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Saturday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%saturday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Sunday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%sunday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcluster_name in ($ClusterName) and\n\t\thost_name in ($HostName)\n\t)\n)  t",
+                        "rawSql": "select t.\"Day\", t.\"Value\" from (\n\t(\n\t\tselect 'Monday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%monday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t) union \n\t(\n\t\tselect 'Tuesday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%tuesday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Wednesday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%wednesday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Thursday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%thursday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Friday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%friday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Saturday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%saturday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t) union\n\t(\n\t\tselect 'Sunday' as \"Day\",\n\t\tsum(case when cd.upgrade_schedule_days like ('%sunday%') then 1 else 0 end) as \"Value\"\n\t\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id\n\t\tjoin node_details nd on nd.node_id = cd.node_id\n\t\twhere organization_name in ('$OrganizationName') and\n\t\tcd.cluster_name in ($ClusterName) and\n\t\tnd.host_name in ($HostName)\n\t)\n)  t",
                         "refId": "A",
                         "select": [
                             [
@@ -802,7 +943,7 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -833,7 +974,7 @@
                     "h": 8,
                     "w": 24,
                     "x": 0,
-                    "y": 53
+                    "y": 63
                 },
                 "id": 2,
                 "options": {
@@ -846,7 +987,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select * from cluster_details cd\nwhere organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\ncluster_name in ($ClusterName) and\nhost_name in ($HostName)",
+                        "rawSql": "select cd.last_updated_timestamp as \"Last Updated Timestamp\", cd.organization_id as \"Organization ID\", cd.cluster_id as \"Cluster ID\", cd.cluster_name as \"Cluster Name\", cd.node_id as \"Node ID\", nd.host_name as \"Host Name\", nd.deployment_type as \"Deployment Type\", \nnd.country_code as \"Country Code\", nd.city as \"City\", nd.timezone as \"Timezone\", cd.release_channel as \"Release Channel\", cd.upgrade_schedule_days as \"Upgrade Schedule Days\", TO_CHAR(cd.upgrade_schedule_time, 'HH12:MI:SS') as \"Upgrade Schedule Time\", cd.upgrade_schedule_timezone as \"Upgrade Schedule Timezone\"\nfrom cluster_details cd join node_details nd on nd.node_id = cd.node_id\nwhere cd.organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\ncd.cluster_name in (select cluster_name from cluster_details where cluster_name in ($ClusterName)) and\nnd.host_name in (select host_name from node_details where host_name in ($HostName))",
                         "refId": "A",
                         "select": [
                             [
@@ -870,7 +1011,7 @@
                         ]
                     }
                 ],
-                "title": "Cluster Details",
+                "title": "Cluster and Node Details",
                 "type": "table"
             }
         ],
@@ -887,7 +1028,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations o",
                     "description": null,
                     "error": null,
@@ -911,7 +1052,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -935,8 +1076,8 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
-                    "definition": "select distinct host_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
+                    "datasource": "TimescaleDB",
+                    "definition": "select distinct host_name from node_details nd join organizations o on nd.organization_id = o.organization_id \njoin cluster_details cd on nd.node_id = cd.node_id\nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
                     "description": null,
                     "error": null,
                     "hide": 0,
@@ -945,7 +1086,7 @@
                     "multi": false,
                     "name": "HostName",
                     "options": [],
-                    "query": "select distinct host_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
+                    "query": "select distinct host_name from node_details nd join organizations o on nd.organization_id = o.organization_id \njoin cluster_details cd on nd.node_id = cd.node_id\nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -959,8 +1100,8 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
-        "title": "1. Cluster Details",
+        "timezone": "utc",
+        "title": "1. Cluster and Node Details",
         "uid": "IMEloHXnz",
         "version": 8
     },

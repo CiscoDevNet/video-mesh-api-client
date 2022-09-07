@@ -25,8 +25,6 @@ CREATE TABLE IF NOT EXISTS NODE_AVAILABILITY(
     cluster_name VARCHAR NOT NULL,
     node_id VARCHAR NOT NULL,
     host_name VARCHAR NOT NULL,
-    num_online_nodes INTEGER NOT NULL,
-    num_offline_nodes INTEGER NOT NULL,
     availability VARCHAR NOT NULL,
     segment_start_time TIMESTAMP NOT NULL,
     segment_end_time TIMESTAMP NOT NULL,
@@ -110,11 +108,11 @@ CREATE TABLE IF NOT EXISTS CLUSTER_UTLIZATION(
 );
 
 CREATE TABLE IF NOT EXISTS CLUSTER_DETAILS(
+    last_updated_timestamp TIMESTAMP NOT NULL,
     organization_id VARCHAR NOT NULL,
     cluster_id VARCHAR NOT NULL,
     cluster_name VARCHAR NOT NULL,
     node_id VARCHAR NOT NULL,
-    host_name VARCHAR NOT NULL,
     release_channel VARCHAR NOT NULL,
     upgrade_schedule_days VARCHAR NOT NULL,
     upgrade_schedule_time TIME NOT NULL,
@@ -124,6 +122,22 @@ CREATE TABLE IF NOT EXISTS CLUSTER_DETAILS(
     PRIMARY KEY (organization_id, cluster_id, node_id)
 );
 
+CREATE TABLE IF NOT EXISTS NODE_DETAILS(
+    last_updated_timestamp_node TIMESTAMP NOT NULL,
+    organization_id VARCHAR NOT NULL,
+    cluster_id VARCHAR NOT NULL,
+    node_id VARCHAR NOT NULL,
+    host_name VARCHAR NOT NULL,
+    deployment_type VARCHAR NOT NULL,
+    country_code VARCHAR NOT NULL,
+    city VARCHAR NOT NULL,
+    timezone VARCHAR NOT NULL,
+    PRIMARY KEY (node_id),
+    CONSTRAINT fk_cluster
+        FOREIGN KEY (organization_id, cluster_id, node_id)
+            REFERENCES CLUSTER_DETAILS(organization_id, cluster_id, node_id)
+);
+
 CREATE TABLE IF NOT EXISTS CITY_COORDINATES(
     continent_name VARCHAR NOT NULL,
     city_name VARCHAR NOT NULL,
@@ -131,3 +145,33 @@ CREATE TABLE IF NOT EXISTS CITY_COORDINATES(
     longitude FLOAT NOT NULL,
     PRIMARY KEY (continent_name, city_name)
 );
+
+SELECT create_hypertable('CLUSTER_AVAILABILITY', 'segment_start_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('CLUSTER_AVAILABILITY', INTERVAL '30 days');
+
+SELECT create_hypertable('NODE_AVAILABILITY', 'segment_start_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('NODE_AVAILABILITY', INTERVAL '30 days');
+
+SELECT create_hypertable('CLOUD_OVERFLOW', 'overflow_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('CLOUD_OVERFLOW', INTERVAL '30 days');
+
+SELECT create_hypertable('CALL_REDIRECTS', 'redirect_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('CALL_REDIRECTS', INTERVAL '30 days');
+
+SELECT create_hypertable('MEDIA_HEALTH_MONITORING_TOOL', 'test_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('MEDIA_HEALTH_MONITORING_TOOL', INTERVAL '30 days');
+
+SELECT create_hypertable('REACHABILITY', 'test_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('REACHABILITY', INTERVAL '30 days');
+
+SELECT create_hypertable('CLUSTER_UTLIZATION', 'measure_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('CLUSTER_UTLIZATION', INTERVAL '30 days');
+
+COMMIT;

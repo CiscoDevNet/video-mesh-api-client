@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -72,7 +72,7 @@
                 "type": "text"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -124,7 +124,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(cr.redirect_count) from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)",
+                        "rawSql": "select sum(cr.redirect_count) from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ('$ClusterName')",
                         "refId": "A",
                         "select": [
                             [
@@ -150,7 +150,7 @@
                 "type": "stat"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -213,7 +213,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(cr.redirect_count), cr.cluster_name from call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)\ngroup by cluster_name",
+                        "rawSql": "select sum(cr.redirect_count), cr.cluster_name from call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ('$ClusterName')\ngroup by cluster_name",
                         "refId": "A",
                         "select": [
                             [
@@ -239,7 +239,7 @@
                 "type": "barchart"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -290,7 +290,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(cr.redirect_count), cr.reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)\ngroup by cr.reason ",
+                        "rawSql": "select sum(cr.redirect_count), cr.reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ('$ClusterName')\ngroup by cr.reason ",
                         "refId": "A",
                         "select": [
                             [
@@ -317,7 +317,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -330,7 +330,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -408,7 +408,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select redirect_time as \"time\", redirect_count as \"Value\", reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(redirect_time) and cluster_name in ($ClusterName)\ngroup by redirect_time, redirect_count, reason\norder by time",
+                        "rawSql": "select redirect_time as \"time\", redirect_count as \"Value\", reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(redirect_time) and cluster_name in ('$ClusterName')\ngroup by redirect_time, redirect_count, reason\norder by time",
                         "refId": "A",
                         "select": [
                             [
@@ -437,7 +437,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -450,7 +450,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -494,7 +494,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select o.organization_name, cr.cluster_name, cr.redirect_time, cr.redirect_count, cr.reason, cr.remediation\nfrom call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)",
+                        "rawSql": "select cr.organization_id as \"Organization ID\", cr.cluster_name as \"Cluster Name\", cr.redirect_time as \"Redirect Time\", cr.redirect_count as \"Redirect Count\", cr.reason as \"Reason\", cr.remediation as \"Remediation\"\nfrom call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere o.organization_name in ('$OrganizationName') and cr.cluster_name in ('$ClusterName')",
                         "refId": "A",
                         "select": [
                             [
@@ -535,7 +535,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -559,7 +559,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct cluster_name from call_redirects ca join organizations o on o.organization_id = ca.organization_id  where organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
@@ -583,7 +583,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "5. Call Redirects",
         "uid": "rZAyJ7wnk",
         "version": 7
