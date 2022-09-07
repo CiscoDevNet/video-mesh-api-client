@@ -51,30 +51,49 @@ class APITriggers:
                 APITriggers.object_count = int(f.read())
                 APITriggers.object_count += 1
             with open('.object_count', 'w') as f:
-                f.write(str(APITriggers.object_count))   
+                f.write(str(APITriggers.object_count))
 
         if APITriggers.object_count == 1:
             thread = threading.Thread(target=self.fetch_historical_data)
             thread.start()
 
+    def call_availability_apis(self, start_time, end_time):
+        self.list_clusters_availability(start_time, end_time)
+        self.list_node_availability(start_time, end_time)
+
     def trigger_all_endpoints(self, start_time, end_time, fetch_orgs=True):
         if fetch_orgs:
             self.list_organizations()
-        self.list_cluster_details()
-        self.list_clusters_availability(start_time, end_time)
-        self.list_node_availability(start_time, end_time)
-        self.list_cloud_overflow(start_time, end_time)
-        self.list_call_redirects(start_time, end_time)
-        self.list_media_health_monitoring_tool(start_time, end_time)
-        self.list_reachability(start_time, end_time)
-        self.list_cluster_utilization(start_time, end_time)
+
+        #create threads for all api calls
+        thread1 = threading.Thread(target=self.list_cluster_details)
+        thread2 = threading.Thread(target=self.call_availability_apis, args = (start_time, end_time))
+        thread3 = threading.Thread(target=self.list_cloud_overflow, args = (start_time, end_time))
+        thread4 = threading.Thread(target=self.list_call_redirects, args = (start_time, end_time))
+        thread5 = threading.Thread(target=self.list_media_health_monitoring_tool, args = (start_time, end_time))
+        thread6 = threading.Thread(target=self.list_reachability, args = (start_time, end_time))
+        thread7 = threading.Thread(target=self.list_cluster_utilization, args = (start_time, end_time))
+
+        list_api_threads = [thread1, thread2, thread3, thread4, thread5, thread6, thread7]
+        #start the thread
+        [api_thread.start() for api_thread in list_api_threads]
+
+        # wait until all threads finish
+        [api_thread.join() for api_thread in list_api_threads]
 
     def fetch_historical_data(self, history="month", fetch_orgs=True):
         end_time = datetime.datetime.utcnow()
+        start_time = end_time - datetime.timedelta(days=31)
         if history == "year":
             start_time = datetime.datetime(end_time.year, 1, 1, 0, 0, 0)
+        elif history == "week":
+            start_time = end_time - datetime.timedelta(days=7)
         elif history == "month":
             start_time = end_time - datetime.timedelta(days=31)
+        elif history == "day":
+            start_time = end_time - datetime.timedelta(days=1)
+        else:
+            pass
 
         logging.info('Fetching historical data from %s to %s', start_time, end_time)
         while end_time >= start_time:
@@ -85,6 +104,8 @@ class APITriggers:
     def list_organizations(self):
         url = self.API_URL_ORGS
         response = requests.get(url, headers=self.request_header)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         logging.debug(response)
         logging.debug(f"Size of response: {len(json.dumps(response).encode('utf-8'))} bytes")
@@ -104,7 +125,10 @@ class APITriggers:
     def get_organization_details(self, organization_id):
         url = f"{self.API_URL_ORGS}/{organization_id}"
         response = requests.get(url, headers=self.request_header)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
+        logging.debug(response)
         organization_details = {
             'displayName': response['displayName'],
             'created': datetime.datetime.strptime(response['created'], "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -126,6 +150,8 @@ class APITriggers:
         url = self.API_URL_CLUSTER_AVAILABILITY
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
@@ -189,6 +215,8 @@ class APITriggers:
         url = self.API_URL_NODE_AVAILABILITY
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
@@ -214,8 +242,6 @@ class APITriggers:
                                     host_name = cluster["hostNameOrIp"]
                                     for availability_segment in cluster["availabilitySegments"]:
                                         try:
-                                            num_offline_nodes = availability_segment["noOfOfflineNodes"]
-                                            num_online_nodes = availability_segment["noOfOnlineNodes"]
                                             availability = availability_segment["availability"]
                                             segment_start_time = datetime.datetime.strptime(
                                                 availability_segment["segmentStartTime"], "%Y-%m-%dT%H:%M:%SZ")
@@ -229,8 +255,6 @@ class APITriggers:
                                                 cluster_name,
                                                 node_id,
                                                 host_name,
-                                                num_offline_nodes,
-                                                num_online_nodes,
                                                 availability,
                                                 segment_start_time,
                                                 segment_end_time
@@ -260,6 +284,8 @@ class APITriggers:
         url = self.API_URL_CLOUD_OVERFLOW
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
@@ -278,21 +304,26 @@ class APITriggers:
                     try:
                         overflow_time = datetime.datetime.strptime(
                             overflow_result["timestamp"], "%Y-%m-%dT%H:%M:%SZ")
-                        overflow_reason = overflow_result["overflowDetails"][0]["overflowReason"]
-                        overflow_count = overflow_result["overflowDetails"][0]["overflowCount"]
-                        remediation = overflow_result["overflowDetails"][0]["possibleRemediation"]
+                        overflow_details = overflow_result["overflowDetails"]
+                        for overflow_detail in overflow_details:
+                            try:
+                                overflow_reason = overflow_detail["overflowReason"]
+                                overflow_count = overflow_detail["overflowCount"]
+                                remediation = overflow_detail["possibleRemediation"]
 
-                        self.db.add_cloud_overflow(
-                            current_time,
-                            organization_id,
-                            aggregation_interval,
-                            from_timestamp,
-                            to_timestamp,
-                            overflow_time,
-                            overflow_reason,
-                            overflow_count,
-                            remediation
-                        )
+                                self.db.add_cloud_overflow(
+                                    current_time,
+                                    organization_id,
+                                    aggregation_interval,
+                                    from_timestamp,
+                                    to_timestamp,
+                                    overflow_time,
+                                    overflow_reason,
+                                    overflow_count,
+                                    remediation
+                                )
+                            except Exception as e:
+                                logging.error(f"Error parsing overflow detail: {e}: {overflow_detail}:\n{response}")
                     except Exception as e:
                         logging.error(f"Error parsing overflow result: {e}: {overflow_result}:\n{response}")
             except Exception as e:
@@ -314,6 +345,8 @@ class APITriggers:
         url = self.API_URL_CALL_REDIRECTS
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
@@ -336,23 +369,28 @@ class APITriggers:
                             try:
                                 cluster_id = cluster_result["clusterId"]
                                 cluster_name = cluster_result["clusterName"]
-                                redirect_reason = cluster_result["redirectDetails"][0]["redirectReason"]
-                                redirect_count = cluster_result["redirectDetails"][0]["redirectCount"]
-                                remediation = cluster_result["redirectDetails"][0]["possibleRemediation"]
+                                redirect_details = cluster_result["redirectDetails"]
+                                for redirect_detail in redirect_details:
+                                    try:
+                                        redirect_reason = redirect_detail["redirectReason"]
+                                        redirect_count = redirect_detail["redirectCount"]
+                                        remediation = redirect_detail["possibleRemediation"]
 
-                                self.db.add_call_redirects(
-                                    current_time,
-                                    organization_id,
-                                    aggregation_interval,
-                                    from_timestamp,
-                                    to_timestamp,
-                                    redirect_time,
-                                    cluster_id,
-                                    cluster_name,
-                                    redirect_reason,
-                                    redirect_count,
-                                    remediation
-                                )
+                                        self.db.add_call_redirects(
+                                            current_time,
+                                            organization_id,
+                                            aggregation_interval,
+                                            from_timestamp,
+                                            to_timestamp,
+                                            redirect_time,
+                                            cluster_id,
+                                            cluster_name,
+                                            redirect_reason,
+                                            redirect_count,
+                                            remediation
+                                        )
+                                    except Exception as e:
+                                        logging.error(f"Error parsing redirect detail: {e}: {redirect_detail}:\n{response}")
                             except Exception as e:
                                 logging.error(f"Error parsing cluster result: {e}: {cluster_result}:\n{response}")
                     except Exception as e:
@@ -376,6 +414,8 @@ class APITriggers:
         url = self.API_URL_MHM_TOOLS
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
@@ -428,7 +468,7 @@ class APITriggers:
                             logging.error(f"Error parsing cluster results: {e}: {cluster_result}:\n{response}")
             except Exception as e:
                 logging.error(
-                    f"Error fetching media health monitoring tool details for {self.organizations[organization_id]['displayName']} ({organization_id}): {e}")
+                    f"Error fetching media health monitoring tool details for {self.organizations[organization_id]['displayName']} ({organization_id}): {e}{response}")
 
     def get_reachability(self, organization_id, from_timestamp, to_timestamp):
         if isinstance(from_timestamp, datetime.datetime):
@@ -445,6 +485,8 @@ class APITriggers:
         url = self.API_URL_REACHABILITY
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
     
@@ -472,43 +514,44 @@ class APITriggers:
                                         test_time = datetime.datetime.strptime(
                                             result["timestamp"], "%Y-%m-%d %H:%M:%S.%f")
 
-                                        for udp_results in result["udp"]:
-                                            port = udp_results["port"]
-                                            reachability = udp_results["reachable"]
-                                            self.db.add_reachability(
-                                                current_time,
-                                                organization_id,
-                                                from_timestamp,
-                                                to_timestamp,
-                                                cluster_id,
-                                                cluster_name,
-                                                node_id,
-                                                host_name,
-                                                destination_cluster,
-                                                test_time,
-                                                "udp",
-                                                port,
-                                                reachability
-                                            )
-
-                                        for tcp_results in result["tcp"]:
-                                            port = tcp_results["port"]
-                                            reachability = tcp_results["reachable"]
-                                            self.db.add_reachability(
-                                                current_time,
-                                                organization_id,
-                                                from_timestamp,
-                                                to_timestamp,
-                                                cluster_id,
-                                                cluster_name,
-                                                node_id,
-                                                host_name,
-                                                destination_cluster,
-                                                test_time,
-                                                "tcp",
-                                                port,
-                                                reachability
-                                            )
+                                        if "udp" in result.keys():
+                                            for udp_results in result["udp"]:
+                                                port = udp_results["port"]
+                                                reachability = udp_results["reachable"]
+                                                self.db.add_reachability(
+                                                    current_time,
+                                                    organization_id,
+                                                    from_timestamp,
+                                                    to_timestamp,
+                                                    cluster_id,
+                                                    cluster_name,
+                                                    node_id,
+                                                    host_name,
+                                                    destination_cluster,
+                                                    test_time,
+                                                    "udp",
+                                                    port,
+                                                    reachability
+                                                )
+                                        if "tcp" in result.keys():
+                                            for tcp_results in result["tcp"]:
+                                                port = tcp_results["port"]
+                                                reachability = tcp_results["reachable"]
+                                                self.db.add_reachability(
+                                                    current_time,
+                                                    organization_id,
+                                                    from_timestamp,
+                                                    to_timestamp,
+                                                    cluster_id,
+                                                    cluster_name,
+                                                    node_id,
+                                                    host_name,
+                                                    destination_cluster,
+                                                    test_time,
+                                                    "tcp",
+                                                    port,
+                                                    reachability
+                                                )
 
                             except Exception as e:
                                 logging.error(f"Error parsing node results: {e}: {node_result}:\n{response}")
@@ -516,7 +559,7 @@ class APITriggers:
                         logging.error(f"Error parsing cluster results: {e}: {cluster_result}:\n{response}")
             except Exception as e:
                 logging.error(
-                    f"Error fetching reachability details for {self.organizations[organization_id]['displayName']} ({organization_id}): {e}")
+                    f"Error fetching reachability details for {self.organizations[organization_id]['displayName']} ({organization_id}): {e}{response}")
 
     def get_cluster_utlization(self, organization_id, from_timestamp, to_timestamp):
         if isinstance(from_timestamp, datetime.datetime):
@@ -533,6 +576,8 @@ class APITriggers:
         url = self.API_URL_CLUSTER_UTILIZATION
         response = requests.get(
             url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
@@ -584,10 +629,13 @@ class APITriggers:
         params = {'orgId': organization_id}
         url = self.API_URL_CLUSTER_DETAILS
         response = requests.get(url, headers=self.request_header, params=params)
+        tracking_id = response.headers['trackingid']
+        logging.debug(f"Tracking ID: {tracking_id}")
         response = response.json()
         return response
 
     def list_cluster_details(self):
+        current_time = datetime.datetime.utcnow()
         for organization_id in self.organizations:
             logging.info(
                 f"Fetching cluster details for {self.organizations[organization_id]['displayName']}")
@@ -603,6 +651,7 @@ class APITriggers:
                         upgrade_schedule_days = cluster_result["upgradeSchedule"]["scheduleDays"]
                         upgrade_schedule_days = ",".join(upgrade_schedule_days)
                         upgrade_schedule_time = cluster_result["upgradeSchedule"]["scheduleTime"] + ":00"
+                        upgrade_schedule_time = datetime.datetime.strptime(upgrade_schedule_time, '%H:%M:%S').astimezone().time()
                         upgrade_schedule_timezone = cluster_result["upgradeSchedule"]["scheduleTimeZone"]
                         upgrade_pending = cluster_result["upgradeSchedule"]["upgradePending"]
                         next_upgrade_time = cluster_result["upgradeSchedule"]["nextUpgradeTime"]
@@ -611,19 +660,35 @@ class APITriggers:
                             try:
                                 node_id = node_result["nodeId"]
                                 host_name = node_result["hostNameOrIp"]
-
+                                deployment_type = node_result["deploymentType"]
+                                country_code = node_result["location"]["countryCode"]
+                                city = node_result["location"]["city"]
+                                timezone = node_result["location"]["timeZone"]
+                                
                                 self.db.add_cluster_details(
+                                    current_time,
                                     organization_id,
                                     cluster_id,
                                     cluster_name, 
                                     node_id,
-                                    host_name,
                                     release_channel,
                                     upgrade_schedule_days,
                                     upgrade_schedule_time,
                                     upgrade_schedule_timezone,
                                     upgrade_pending,
                                     next_upgrade_time
+                                )
+
+                                self.db.add_node_details(
+                                    current_time,
+                                    organization_id,
+                                    cluster_id,
+                                    node_id,
+                                    host_name,
+                                    deployment_type,
+                                    country_code,
+                                    city,
+                                    timezone,                                    
                                 )
 
                             except Exception as e:

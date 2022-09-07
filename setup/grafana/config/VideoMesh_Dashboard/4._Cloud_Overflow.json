@@ -27,7 +27,7 @@
         "links": [],
         "panels": [
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -72,7 +72,7 @@
                 "type": "text"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -150,7 +150,7 @@
                 "type": "stat"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -230,7 +230,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -243,7 +243,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -349,7 +349,7 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -362,7 +362,7 @@
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": "TimescaleDB",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -408,7 +408,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select o.organization_id, overflow_time, overflow_count, reason, remediation from cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_time) and o.organization_name in ('$OrganizationName')",
+                        "rawSql": "select o.organization_id as \"Organization ID\", overflow_time as \"Overflow Time\", overflow_count as \"Overflow Count\", reason as \"Reason\", remediation as \"Remediation\" from cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_time) and o.organization_name in ('$OrganizationName')",
                         "refId": "A",
                         "select": [
                             [
@@ -448,7 +448,7 @@
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": null,
+                    "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
                     "description": null,
                     "error": null,
@@ -472,7 +472,7 @@
             "to": "now"
         },
         "timepicker": {},
-        "timezone": "",
+        "timezone": "utc",
         "title": "4. Cloud Overflow",
         "uid": "E3BC-nQ7z",
         "version": 3
