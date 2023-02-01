@@ -1,7 +1,7 @@
 services:
   web:
     build:
-      context: ..
+      context: ../
       dockerfile: docker/flask.dockerfile
     ports:
       - "2808:2808"
@@ -10,7 +10,7 @@ services:
       - timescale
   grafana:
     build:
-      context: ..
+      context: ../
       dockerfile: docker/grafana.dockerfile
     ports:
       - "3000:3000"
