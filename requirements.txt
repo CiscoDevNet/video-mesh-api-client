@@ -14,12 +14,14 @@ importlib-metadata==4.11.3
 itsdangerous==2.1.1
 Jinja2==3.0.3
 MarkupSafe==2.1.1
+pip==22.2.2
 psycopg2-binary==2.9.3
 pycodestyle==2.8.0
 python-dotenv==0.19.2
 pytz==2022.1
 pytz-deprecation-shim==0.1.0.post0
 requests==2.27.1
+setuptools==65.5.0
 six==1.16.0
 SQLAlchemy==1.4.32
 toml==0.10.2
@@ -29,4 +31,5 @@ tzlocal==4.1
 urllib3==1.26.9
 uvicorn==0.17.6
 Werkzeug==2.0.3
+wheel==0.37.1
 zipp==3.8.0

@@ -1,0 +1,1440 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "id": null,
+        "iteration": 1674803909009,
+        "links": [],
+        "panels": [
+            {
+                "datasource": "TimescaleDB",
+                "gridPos": {
+                    "h": 3,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 5,
+                "options": {
+                    "content": "<center><h1> ${OrganizationName} </center></h1>",
+                    "mode": "html"
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": false,
+                        "rawSql": "SELECT\n  $__time(time_column),\n  value1\nFROM\n  metric_table\nWHERE\n  $__timeFilter(time_column)\n",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Organization",
+                "type": "text"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 3
+                },
+                "id": 14,
+                "panels": [],
+                "title": "WebexCloud",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "red",
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Success"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "green",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Failed"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "red",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 13,
+                    "w": 8,
+                    "x": 0,
+                    "y": 4
+                },
+                "id": 7,
+                "options": {
+                    "displayLabels": [],
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) as \"Success\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Success' and ctr.service_type = 'WebexCloud'",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) as \"Failed\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Failed' and ctr.service_type = 'WebexCloud'",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Overall Test Result Distribution - Webex Cloud",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "green",
+                            "mode": "fixed"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "WebSocketConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "blue",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "BandwidthTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "yellow",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "HTTPSConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "#FF9830",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "WSConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "purple",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 13,
+                    "w": 8,
+                    "x": 8,
+                    "y": 4
+                },
+                "id": 11,
+                "options": {
+                    "displayLabels": [],
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_type, count(ctr.test_result) from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'WebexCloud' and\nctr.test_result = 'Success' and\nctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type ",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Successful Test Result Distribution - Webex Cloud",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Failed"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "mode": "palette-classic"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "DNSResolutionTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "orange",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 13,
+                    "w": 8,
+                    "x": 16,
+                    "y": 4
+                },
+                "id": 10,
+                "options": {
+                    "displayLabels": [],
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_type, count(ctr.test_result) as \"Failed\" from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'WebexCloud' and\nctr.test_result = 'Failed' and\nctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Failed Test Result Distribution - Webex Cloud",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "points",
+                            "fillOpacity": 5,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 1,
+                            "pointSize": 10,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "auto",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "line"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Test Result -  WebSocketConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "purple",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Test Result -  BandwidthTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "green",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Test Result -  HTTPSConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "blue",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Test Result -  DNSResolutionTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "yellow",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Test Result -  WSConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "orange",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 9,
+                    "w": 24,
+                    "x": 0,
+                    "y": 17
+                },
+                "id": 2,
+                "options": {
+                    "legend": {
+                        "calcs": [],
+                        "displayMode": "list",
+                        "placement": "bottom"
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result - \"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere\no.organization_name in ('$OrganizationName') and\nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and\nctr.trigger_type in ($TriggerType) and \nctr.service_type = 'WebexCloud' and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId)\ngroup by ctr.test_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "hide": true,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result for ThirdPartyCloud:\"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere ctr.trigger_type = 'Periodic' and ctr.service_type = 'ThirdPartyCloud' and ctr.test_id in ($TestId)\no.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName)\ngroup by ctr.test_type, ctr.service_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Connectivity Test Results Trend for WebexCloud",
+                "type": "timeseries"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 26
+                },
+                "id": 16,
+                "panels": [],
+                "title": "ThirdPartyCloud",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "red",
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Success"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "green",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Failed"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "red",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 13,
+                    "w": 8,
+                    "x": 0,
+                    "y": 27
+                },
+                "id": 22,
+                "options": {
+                    "displayLabels": [],
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) as \"Success\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Success' and ctr.service_type = 'ThirdPartyCloud'",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) as \"Failed\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Failed' and ctr.service_type = 'ThirdPartyCloud'",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Overall Test Result Distribution - ThirdPartyCloud",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "green",
+                            "mode": "fixed"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "WebSocketConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "blue",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "BandwidthTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "yellow",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "HTTPSConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "#FF9830",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "WSConnectivityTest"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "purple",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 13,
+                    "w": 8,
+                    "x": 8,
+                    "y": 27
+                },
+                "id": 23,
+                "options": {
+                    "displayLabels": [],
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_type, count(ctr.test_result) as \"Success\" from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'ThirdPartyCloud' and\nctr.test_result = 'Success' and ctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type ",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Successful Test Result Distribution - ThirdPartyCloud",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 13,
+                    "w": 8,
+                    "x": 16,
+                    "y": 27
+                },
+                "id": 24,
+                "options": {
+                    "displayLabels": [],
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_type, count(ctr.test_result) as \"Failed\" from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'ThirdPartyCloud' and\nctr.test_result = 'Failed' and ctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type ",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Failed Test Result Distribution - ThirdPartyCloud",
+                "type": "piechart"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "points",
+                            "fillOpacity": 5,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 1,
+                            "pointSize": 10,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "auto",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 9,
+                    "w": 24,
+                    "x": 0,
+                    "y": 40
+                },
+                "id": 17,
+                "options": {
+                    "legend": {
+                        "calcs": [],
+                        "displayMode": "list",
+                        "placement": "bottom"
+                    },
+                    "tooltip": {
+                        "mode": "single"
+                    }
+                },
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result - \"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere\no.organization_name in ('$OrganizationName') and\nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and\nctr.trigger_type in ($TriggerType) and \nctr.service_type = 'ThirdPartyCloud' and\n$__timeFilter(ctr.test_timestamp) and ctr.test_id in ($TestId)\ngroup by ctr.test_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "hide": true,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result for ThirdPartyCloud:\"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere ctr.trigger_type = 'Periodic' and ctr.service_type = 'ThirdPartyCloud' and\no.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName) and ctr.test_id in ($TestId)\ngroup by ctr.test_type, ctr.service_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Connectivity Test Results Trend for ThirdPartyCloud",
+                "type": "timeseries"
+            },
+            {
+                "collapsed": false,
+                "datasource": null,
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 49
+                },
+                "id": 19,
+                "panels": [],
+                "title": "Connectivity Test Results",
+                "type": "row"
+            },
+            {
+                "datasource": null,
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "fixedColor": "transparent",
+                            "mode": "fixed"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "displayMode": "color-background",
+                            "filterable": true
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "Failed": {
+                                        "color": "red",
+                                        "index": 1,
+                                        "text": "Failed"
+                                    },
+                                    "Success": {
+                                        "color": "green",
+                                        "index": 0,
+                                        "text": "Success"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 10,
+                    "w": 24,
+                    "x": 0,
+                    "y": 50
+                },
+                "id": 21,
+                "options": {
+                    "showHeader": true
+                },
+                "pluginVersion": "8.1.8",
+                "targets": [
+                    {
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select ctr.test_timestamp as \"Test Timestamp\", \nctr.test_id as \"Test ID\",\no.organization_name as \"Organization Name\", \nctr.cluster_name as \"Cluster Name\", \nctr.host_name as \"Host Name\", \nctr.test_type as \"Test Type\", \nctr.service_type as \"Service Type\", \nctr.test_result as \"Test Result\",\nctr.failure_reason as \"Failure Reason\",\nctr.possible_remediation as \"Possible Remediation\"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere\no.organization_name in ('$OrganizationName') and\nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and\nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Connectivity Test Results",
+                "type": "table"
+            }
+        ],
+        "refresh": "",
+        "schemaVersion": 30,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "Canopus Homer Test 123 ",
+                        "value": "Canopus Homer Test 123 "
+                    },
+                    "datasource": "TimescaleDB",
+                    "definition": "select distinct organization_name from organizations o",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Select Organization Name",
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select distinct organization_name from organizations o",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": "TimescaleDB",
+                    "definition": "select distinct cluster_name from connectivity_test_results cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Cluster Name",
+                    "multi": false,
+                    "name": "ClusterName",
+                    "options": [],
+                    "query": "select distinct cluster_name from connectivity_test_results cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": "TimescaleDB",
+                    "definition": "select distinct host_name from connectivity_test_results nd join organizations o on nd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and nd.cluster_name in ($ClusterName) ",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Host Name",
+                    "multi": false,
+                    "name": "HostName",
+                    "options": [],
+                    "query": "select distinct host_name from connectivity_test_results nd join organizations o on nd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and nd.cluster_name in ($ClusterName) ",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": true,
+                        "text": [
+                            "Periodic"
+                        ],
+                        "value": [
+                            "Periodic"
+                        ]
+                    },
+                    "datasource": null,
+                    "definition": "select distinct trigger_type from connectivity_test_results",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Trigger Type",
+                    "multi": true,
+                    "name": "TriggerType",
+                    "options": [],
+                    "query": "select distinct trigger_type from connectivity_test_results",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzpmYjdlOGRjMi0wZTkxLTQ3ZjItYWFiNi04NGE5YjZmMDI1YTI",
+                        "value": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzpmYjdlOGRjMi0wZTkxLTQ3ZjItYWFiNi04NGE5YjZmMDI1YTI"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct ctr.test_id from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nand o.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName)",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Test ID",
+                    "multi": false,
+                    "name": "TestId",
+                    "options": [],
+                    "query": "select distinct ctr.test_id from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nand o.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName)",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-6h",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "utc",
+        "title": "8. Network Test Results",
+        "uid": "SkN7_ZK4k",
+        "version": 12
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}

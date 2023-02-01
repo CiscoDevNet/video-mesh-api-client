@@ -138,6 +138,66 @@ CREATE TABLE IF NOT EXISTS NODE_DETAILS(
             REFERENCES CLUSTER_DETAILS(organization_id, cluster_id, node_id)
 );
 
+CREATE TABLE IF NOT EXISTS REACHABILITY_TEST_RESULTS(
+    timestamp TIMESTAMP NOT NULL,
+    from_time TIMESTAMP NOT NULL,
+    to_time TIMESTAMP NOT NULL,
+    organization_id VARCHAR NOT NULL,
+    cluster_id VARCHAR NOT NULL,
+    cluster_name VARCHAR NOT NULL,
+    node_id VARCHAR NOT NULL,
+    host_name VARCHAR NOT NULL,
+    ip_address VARCHAR NOT NULL,
+    destination_cluster VARCHAR NOT NULL,
+    test_timestamp TIMESTAMP NOT NULL,
+    test_id VARCHAR NOT NULL,
+    trigger_type VARCHAR NOT NULL,
+    reachability_type VARCHAR NOT NULL,
+    port INTEGER NOT NULL,
+    reachability BOOLEAN NOT NULL,
+    PRIMARY KEY(organization_id, cluster_id, node_id, destination_cluster, test_id, test_timestamp, reachability_type, port)
+);
+
+CREATE TABLE IF NOT EXISTS MEDIA_HEALTH_MONITORING_TEST_RESULTS(
+    timestamp TIMESTAMP NOT NULL,
+    from_time TIMESTAMP NOT NULL,
+    to_time TIMESTAMP NOT NULL,
+    organization_id VARCHAR NOT NULL,
+    cluster_id VARCHAR NOT NULL,
+    cluster_name VARCHAR NOT NULL,
+    node_id VARCHAR NOT NULL,
+    host_name VARCHAR NOT NULL,
+    ip_address VARCHAR NOT NULL,
+    test_timestamp TIMESTAMP NOT NULL,
+    test_id VARCHAR NOT NULL,
+    trigger_type VARCHAR NOT NULL,
+    test_name VARCHAR NOT NULL,
+    test_result VARCHAR NOT NULL,
+    failure_reason VARCHAR,
+    PRIMARY KEY (organization_id, cluster_id, node_id, test_id, test_timestamp, test_name)
+);
+
+CREATE TABLE IF NOT EXISTS CONNECTIVITY_TEST_RESULTS(
+    timestamp TIMESTAMP NOT NULL,
+    from_time TIMESTAMP NOT NULL,
+    to_time TIMESTAMP NOT NULL,
+    organization_id VARCHAR NOT NULL,
+    cluster_id VARCHAR NOT NULL,
+    cluster_name VARCHAR NOT NULL,
+    node_id VARCHAR NOT NULL,
+    host_name VARCHAR NOT NULL,
+    ip_address VARCHAR NOT NULL,
+    test_timestamp TIMESTAMP NOT NULL,
+    test_id VARCHAR NOT NULL,
+    trigger_type VARCHAR NOT NULL,
+    test_type VARCHAR NOT NULL,
+    service_type VARCHAR NOT NULL,
+    test_result VARCHAR NOT NULL,
+    failure_reason VARCHAR,
+    possible_remediation VARCHAR,
+    PRIMARY KEY (organization_id, cluster_id, node_id, test_id, test_timestamp, test_type, service_type)
+);
+
 CREATE TABLE IF NOT EXISTS CITY_COORDINATES(
     continent_name VARCHAR NOT NULL,
     city_name VARCHAR NOT NULL,
@@ -148,30 +208,42 @@ CREATE TABLE IF NOT EXISTS CITY_COORDINATES(
 
 SELECT create_hypertable('CLUSTER_AVAILABILITY', 'segment_start_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('CLUSTER_AVAILABILITY', INTERVAL '30 days');
+SELECT add_retention_policy('CLUSTER_AVAILABILITY', INTERVAL '30 days', if_not_exists => TRUE);
 
 SELECT create_hypertable('NODE_AVAILABILITY', 'segment_start_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('NODE_AVAILABILITY', INTERVAL '30 days');
+SELECT add_retention_policy('NODE_AVAILABILITY', INTERVAL '30 days', if_not_exists => TRUE);
 
 SELECT create_hypertable('CLOUD_OVERFLOW', 'overflow_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('CLOUD_OVERFLOW', INTERVAL '30 days');
+SELECT add_retention_policy('CLOUD_OVERFLOW', INTERVAL '30 days', if_not_exists => TRUE);
 
 SELECT create_hypertable('CALL_REDIRECTS', 'redirect_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('CALL_REDIRECTS', INTERVAL '30 days');
+SELECT add_retention_policy('CALL_REDIRECTS', INTERVAL '30 days', if_not_exists => TRUE);
 
 SELECT create_hypertable('MEDIA_HEALTH_MONITORING_TOOL', 'test_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('MEDIA_HEALTH_MONITORING_TOOL', INTERVAL '30 days');
+SELECT add_retention_policy('MEDIA_HEALTH_MONITORING_TOOL', INTERVAL '30 days', if_not_exists => TRUE);
 
 SELECT create_hypertable('REACHABILITY', 'test_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('REACHABILITY', INTERVAL '30 days');
+SELECT add_retention_policy('REACHABILITY', INTERVAL '30 days', if_not_exists => TRUE);
 
 SELECT create_hypertable('CLUSTER_UTLIZATION', 'measure_time', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
-SELECT add_retention_policy('CLUSTER_UTLIZATION', INTERVAL '30 days');
+SELECT add_retention_policy('CLUSTER_UTLIZATION', INTERVAL '30 days', if_not_exists => TRUE);
+
+SELECT create_hypertable('REACHABILITY_TEST_RESULTS', 'test_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('REACHABILITY_TEST_RESULTS', INTERVAL '30 days', if_not_exists => TRUE);
+
+SELECT create_hypertable('MEDIA_HEALTH_MONITORING_TEST_RESULTS', 'test_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('MEDIA_HEALTH_MONITORING_TEST_RESULTS', INTERVAL '30 days', if_not_exists => TRUE);
+
+SELECT create_hypertable('CONNECTIVITY_TEST_RESULTS', 'test_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('CONNECTIVITY_TEST_RESULTS', INTERVAL '30 days', if_not_exists => TRUE);
 
 COMMIT;
