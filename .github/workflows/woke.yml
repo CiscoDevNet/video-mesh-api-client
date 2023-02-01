@@ -13,3 +13,4 @@ jobs:
         uses: get-woke/woke-action@v0
         with:
           fail-on-error: true
+          workdir: app/
