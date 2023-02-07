@@ -23,7 +23,7 @@
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1653037913346,
+        "iteration": 1673424566212,
         "links": [],
         "panels": [
             {
@@ -321,7 +321,7 @@
         "timezone": "utc",
         "title": "6. Node Availability",
         "uid": "7a3E91s7z",
-        "version": 4
+        "version": 2
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

@@ -23,7 +23,7 @@
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1653382020492,
+        "iteration": 1673424563364,
         "links": [],
         "panels": [
             {
@@ -129,7 +129,7 @@
                             [
                                 {
                                     "params": [
-                                      "peak_cpu"
+                                        "peak_cpu"
                                     ],
                                     "type": "column"
                                 }
@@ -140,9 +140,9 @@
                         "timeColumnType": "timestamp",
                         "where": [
                             {
-                              "name": "$__timeFilter",
-                              "params": [],
-                              "type": "macro"
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
                             }
                         ]
                     }
@@ -155,7 +155,7 @@
                 "fieldConfig": {
                     "defaults": {
                         "color": {
-                          "mode": "thresholds"
+                            "mode": "thresholds"
                         },
                         "mappings": [],
                         "thresholds": {
@@ -173,56 +173,56 @@
                         }
                     },
                     "overrides": []
+                },
+                "gridPos": {
+                    "h": 9,
+                    "w": 14,
+                    "x": 10,
+                    "y": 3
+                },
+                "id": 20,
+                "options": {
+                    "basemap": {
+                        "config": {},
+                        "type": "osm-standard"
                     },
-                    "gridPos": {
-                        "h": 9,
-                        "w": 14,
-                        "x": 10,
-                        "y": 3
+                    "controls": {
+                        "mouseWheelZoom": true,
+                        "showAttribution": true,
+                        "showDebug": false,
+                        "showScale": false,
+                        "showZoom": true
                     },
-                    "id": 20,
-                    "options": {
-                        "basemap": {
-                            "config": {},
-                            "type": "osm-standard"
-                        },
-                        "controls": {
-                            "mouseWheelZoom": true,
-                            "showAttribution": true,
-                            "showDebug": false,
-                            "showScale": false,
-                            "showZoom": true
-                        },
-                        "layers": [
-                            {
-                                "config": {
-                                    "color": {
+                    "layers": [
+                        {
+                            "config": {
+                                "color": {
                                     "fixed": "dark-green"
-                                    },
-                                    "fillOpacity": 0.4,
-                                    "shape": "circle",
-                                    "showLegend": true,
-                                    "size": {
-                                        "field": "count",
-                                        "fixed": 5,
-                                        "max": 30,
-                                        "min": 5
-                                    }
                                 },
-                                "location": {
-                                  "mode": "auto"
-                                },
-                                "type": "markers"
-                            }
-                        ],
-                        "view": {
-                            "id": "coords",
-                            "lat": 25.606689,
-                            "lon": -0.41863,
-                            "zoom": 2.05
+                                "fillOpacity": 0.4,
+                                "shape": "circle",
+                                "showLegend": true,
+                                "size": {
+                                    "field": "count",
+                                    "fixed": 5,
+                                    "max": 30,
+                                    "min": 5
+                                }
+                            },
+                            "location": {
+                                "mode": "auto"
+                            },
+                            "type": "markers"
                         }
-                    },
-                    "targets": [
+                    ],
+                    "view": {
+                        "id": "coords",
+                        "lat": 25.606689,
+                        "lon": -0.41863,
+                        "zoom": 2.05
+                    }
+                },
+                "targets": [
                     {
                         "format": "table",
                         "group": [],
@@ -234,7 +234,7 @@
                             [
                                 {
                                     "params": [
-                                      "peak_cpu"
+                                        "peak_cpu"
                                     ],
                                     "type": "column"
                                 }
@@ -258,20 +258,20 @@
             {
                 "datasource": "TimescaleDB",
                 "fieldConfig": {
-                  "defaults": {
-                      "color": {
-                        "mode": "palette-classic"
-                      },
-                      "custom": {
-                        "hideFrom": {
-                          "legend": false,
-                          "tooltip": false,
-                          "viz": false
-                        }
-                      },
-                      "mappings": []
-                  },
-                  "overrides": []
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": []
+                    },
+                    "overrides": []
                 },
                 "gridPos": {
                     "h": 11,
@@ -308,7 +308,6 @@
                         "metricColumn": "none",
                         "rawQuery": true,
                         "rawSql": "select cd.cluster_name, count(cd.cluster_name) as \"Value\" from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere organization_name in ('$OrganizationName') and\ncluster_name in ($ClusterName) and\nnd.host_name in ($HostName)\ngroup by cd.cluster_name",
-
                         "refId": "A",
                         "select": [
                             [
@@ -1103,7 +1102,7 @@
         "timezone": "utc",
         "title": "1. Cluster and Node Details",
         "uid": "IMEloHXnz",
-        "version": 8
+        "version": 2
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

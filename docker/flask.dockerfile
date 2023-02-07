@@ -1,5 +1,5 @@
 # Set base image as python
-FROM python
+FROM python:3.10.8
 
 # Update and install dependencies
 RUN apt update -y

@@ -1,0 +1,13 @@
+name: Docker-Compose Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: cd docker/ && docker-compose --project-name video-mesh-api-client up -d
+      - name: Test
+        run: docker run --network container:web appropriate/curl -s --retry 10 --retry-connrefused http://localhost:2808/

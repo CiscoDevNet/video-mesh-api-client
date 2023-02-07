@@ -23,7 +23,7 @@
         "gnetId": null,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1653385821526,
+        "iteration": 1674803909601,
         "links": [],
         "panels": [
             {
@@ -133,7 +133,7 @@
                 },
                 "gridPos": {
                     "h": 8,
-                    "w": 6,
+                    "w": 24,
                     "x": 0,
                     "y": 4
                 },
@@ -150,7 +150,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select  \n\tdestination_cluster as \"Destination Cluster\", \n\tcase \n\t\twhen ((count(case when reachability = 'true' then 1 else null end) * 100) / count(*)) >= 90 then 2\n\t\twhen (count(case when reachability = 'false' then 1 else null end) = count(*)) then 0\n\t\telse 1\n\tend as \"Reachability\"\nfrom \n(\n\tSELECT r2.cluster_id, r2.cluster_name, r2.destination_cluster, r2.reachability, r2.reachability_type \n\tfrom reachability r2 JOIN organizations o on r2.organization_id  = o.organization_id \n\twhere \n\t\to.organization_name  IN ('$OrganizationName') and\n\t\tr2.cluster_name in ($ClusterName) and\n\t\t$__timeFilter(r2.test_time) and\n\t\tr2.host_name in ($HostName) and\n\t\tr2.reachability_type='udp'\n\torder by r2.destination_cluster \n) t\ngroup by destination_cluster \norder by \"Reachability\" asc",
+                        "rawSql": "select  \n\tdestination_cluster as \"Destination Cluster\", \n\tcase \n\t\twhen ((count(case when reachability = 'true' then 1 else null end) * 100) / count(*)) >= 90 then 2\n\t\twhen (count(case when reachability = 'false' then 1 else null end) = count(*)) then 0\n\t\telse 1\n\tend as \"Reachability\"\nfrom \n(\n\tSELECT r2.cluster_id, r2.cluster_name, r2.destination_cluster, r2.reachability, r2.reachability_type \n\tfrom reachability_test_results r2 JOIN organizations o on r2.organization_id  = o.organization_id \n\twhere \n\t\to.organization_name  IN ('$OrganizationName') and\n\t\tr2.cluster_name in ($ClusterName) and\n\t\t$__timeFilter(r2.test_timestamp) and\n\t\tr2.host_name in ($HostName) and\n\t\tr2.reachability_type='udp' and\n\t\tr2.trigger_type in ($TriggerType) and \n\t\tr2.test_id in ($TestId)\n\torder by r2.destination_cluster \n) t\ngroup by destination_cluster \norder by \"Reachability\" asc",
                         "refId": "A",
                         "select": [
                             [
@@ -182,7 +182,7 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 28
+                    "y": 20
                 },
                 "id": 62,
                 "panels": [],
@@ -237,9 +237,9 @@
                 },
                 "gridPos": {
                     "h": 8,
-                    "w": 6,
+                    "w": 24,
                     "x": 0,
-                    "y": 29
+                    "y": 21
                 },
                 "id": 14,
                 "options": {
@@ -254,7 +254,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select  \n\tdestination_cluster as \"Destination Cluster\", \n\tcase \n\t\twhen ((count(case when reachability = 'true' then 1 else null end) * 100) / count(*)) >= 90 then 2\n\t\twhen (count(case when reachability = 'false' then 1 else null end) = count(*)) then 0\n\t\telse 1\n\tend as \"Reachability\"\nfrom \n(\n\tSELECT r2.cluster_id, r2.cluster_name, r2.destination_cluster, r2.reachability, r2.reachability_type \n\tfrom reachability r2 JOIN organizations o on r2.organization_id  = o.organization_id \n\twhere \n\t\to.organization_name  IN ('$OrganizationName') and\n\t\tr2.cluster_name in ($ClusterName) and\n\t\t$__timeFilter(r2.test_time) and\n\t\tr2.host_name in ($HostName) and\n\t\tr2.reachability_type='tcp'\n\torder by r2.destination_cluster \n) t\ngroup by destination_cluster \norder by \"Reachability\" asc",
+                        "rawSql": "select  \n\tdestination_cluster as \"Destination Cluster\", \n\tcase \n\t\twhen ((count(case when reachability = 'true' then 1 else null end) * 100) / count(*)) >= 90 then 2\n\t\twhen (count(case when reachability = 'false' then 1 else null end) = count(*)) then 0\n\t\telse 1\n\tend as \"Reachability\"\nfrom \n(\n\tSELECT r2.cluster_id, r2.cluster_name, r2.destination_cluster, r2.reachability, r2.reachability_type \n\tfrom reachability_test_results r2 JOIN organizations o on r2.organization_id  = o.organization_id \n\twhere \n\t\to.organization_name  IN ('$OrganizationName') and\n\t\tr2.cluster_name in ($ClusterName) and\n\t\t$__timeFilter(r2.test_timestamp) and\n\t\tr2.host_name in ($HostName) and\n\t\tr2.reachability_type='tcp' and\n\t\tr2.trigger_type in ($TriggerType) and\n\t\tr2.test_id in ($TestId)\n\torder by r2.destination_cluster \n) t\ngroup by destination_cluster \norder by \"Reachability\" asc",
                         "refId": "A",
                         "select": [
                             [
@@ -286,7 +286,7 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 53
+                    "y": 37
                 },
                 "id": 80,
                 "panels": [],
@@ -305,231 +305,7 @@
                     "h": 10,
                     "w": 12,
                     "x": 0,
-                    "y": 54
-                },
-                "hiddenSeries": false,
-                "id": 21,
-                "legend": {
-                    "alignAsTable": false,
-                    "avg": false,
-                    "current": false,
-                    "max": false,
-                    "min": false,
-                    "show": true,
-                    "total": false,
-                    "values": false
-                },
-                "lines": false,
-                "linewidth": 1,
-                "nullPointMode": "null",
-                "options": {
-                    "alertThreshold": true
-                },
-                "percentage": false,
-                "pluginVersion": "8.1.8",
-                "pointradius": 2,
-                "points": true,
-                "renderer": "flot",
-                "seriesOverrides": [],
-                "spaceLength": 10,
-                "stack": false,
-                "steppedLine": false,
-                "targets": [
-                    {
-                        "format": "time_series",
-                        "group": [],
-                        "metricColumn": "none",
-                        "rawQuery": true,
-                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port > 50000 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
-                        "refId": "A",
-                        "select": [
-                            [
-                                {
-                                    "params": [
-                                        "value"
-                                    ],
-                                    "type": "column"
-                                }
-                            ]
-                        ],
-                        "timeColumn": "time",
-                        "where": [
-                            {
-                                "name": "$__timeFilter",
-                                "params": [],
-                                "type": "macro"
-                            }
-                        ]
-                    }
-                ],
-                "thresholds": [],
-                "timeFrom": null,
-                "timeRegions": [],
-                "timeShift": null,
-                "title": "UDP Reachable Ports [50000-53000]",
-                "tooltip": {
-                    "shared": true,
-                    "sort": 0,
-                    "value_type": "individual"
-                },
-                "type": "graph",
-                "xaxis": {
-                    "buckets": null,
-                    "mode": "time",
-                    "name": null,
-                    "show": true,
-                    "values": []
-                },
-                "yaxes": [
-                    {
-                        "$$hashKey": "object:190",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    },
-                    {
-                        "$$hashKey": "object:191",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    }
-                ],
-                "yaxis": {
-                    "align": false,
-                    "alignLevel": null
-                }
-            },
-            {
-                "aliasColors": {},
-                "bars": false,
-                "dashLength": 10,
-                "dashes": false,
-                "datasource": "TimescaleDB",
-                "fill": 1,
-                "fillGradient": 0,
-                "gridPos": {
-                    "h": 10,
-                    "w": 12,
-                    "x": 12,
-                    "y": 54
-                },
-                "hiddenSeries": false,
-                "id": 7,
-                "legend": {
-                    "alignAsTable": false,
-                    "avg": false,
-                    "current": false,
-                    "max": false,
-                    "min": false,
-                    "show": true,
-                    "total": false,
-                    "values": false
-                },
-                "lines": false,
-                "linewidth": 1,
-                "nullPointMode": "null",
-                "options": {
-                    "alertThreshold": true
-                },
-                "percentage": false,
-                "pluginVersion": "8.1.8",
-                "pointradius": 2,
-                "points": true,
-                "renderer": "flot",
-                "seriesOverrides": [],
-                "spaceLength": 10,
-                "stack": false,
-                "steppedLine": false,
-                "targets": [
-                    {
-                        "format": "time_series",
-                        "group": [],
-                        "metricColumn": "none",
-                        "rawQuery": true,
-                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port > 50000 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
-                        "refId": "A",
-                        "select": [
-                            [
-                                {
-                                    "params": [
-                                        "value"
-                                    ],
-                                    "type": "column"
-                                }
-                            ]
-                        ],
-                        "timeColumn": "time",
-                        "where": [
-                            {
-                                "name": "$__timeFilter",
-                                "params": [],
-                                "type": "macro"
-                            }
-                        ]
-                    }
-                ],
-                "thresholds": [],
-                "timeFrom": null,
-                "timeRegions": [],
-                "timeShift": null,
-                "title": "UDP Not Reachable Ports [50000-53000]",
-                "tooltip": {
-                    "shared": true,
-                    "sort": 0,
-                    "value_type": "individual"
-                },
-                "type": "graph",
-                "xaxis": {
-                    "buckets": null,
-                    "mode": "time",
-                    "name": null,
-                    "show": true,
-                    "values": []
-                },
-                "yaxes": [
-                    {
-                        "$$hashKey": "object:190",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    },
-                    {
-                        "$$hashKey": "object:191",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    }
-                ],
-                "yaxis": {
-                    "align": false,
-                    "alignLevel": null
-                }
-            },
-            {
-                "aliasColors": {},
-                "bars": false,
-                "dashLength": 10,
-                "dashes": false,
-                "datasource": "TimescaleDB",
-                "fill": 1,
-                "fillGradient": 0,
-                "gridPos": {
-                    "h": 10,
-                    "w": 12,
-                    "x": 0,
-                    "y": 64
+                    "y": 38
                 },
                 "hiddenSeries": false,
                 "id": 5,
@@ -564,7 +340,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port = 5004 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "rawSql": "SELECT \n  r.test_timestamp as \"time\",\n  r.port as \"Port\"\nFROM reachability_test_results r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability_test_results r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.trigger_type in ($TriggerType) and\n  \t\tr.port = 5004 and\n  \t\t$__timeFilter(test_timestamp)\n  ) and\n  $__timeFilter(test_timestamp) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'udp' and\n  r.test_id in ($TestId) and\n  r.trigger_type in ($TriggerType)\ngroup by r.port, r.test_timestamp\norder by \"time\"",
                         "refId": "A",
                         "select": [
                             [
@@ -641,7 +417,231 @@
                     "h": 10,
                     "w": 12,
                     "x": 12,
-                    "y": 64
+                    "y": 38
+                },
+                "hiddenSeries": false,
+                "id": 7,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_timestamp as \"time\",\n  r.port as \"Port\"\nFROM reachability_test_results r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability_test_results r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port > 50000 and\n  \t\t$__timeFilter(test_timestamp)\n  ) and\n  $__timeFilter(test_timestamp) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'udp' and\n  r.test_id in ($TestId) and\n  r.trigger_type in ($TriggerType)\ngroup by r.port, r.test_timestamp\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "UDP Not Reachable Ports [50000-53000]",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "TimescaleDB",
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 0,
+                    "y": 48
+                },
+                "hiddenSeries": false,
+                "id": 21,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "8.1.8",
+                "pointradius": 2,
+                "points": true,
+                "renderer": "flot",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "format": "time_series",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \n  r.test_timestamp as \"time\",\n  r.port as \"Port\"\nFROM reachability_test_results r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability_test_results r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port > 50000 and\n  \t\t$__timeFilter(test_timestamp) and r.trigger_type in ($TriggerType)\n  ) and\n  $__timeFilter(test_timestamp) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.test_id in ($TestId) and\n  r.reachability_type = 'udp' and r.trigger_type in ($TriggerType)\ngroup by r.port, r.test_timestamp\norder by \"time\"",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "thresholds": [],
+                "timeFrom": null,
+                "timeRegions": [],
+                "timeShift": null,
+                "title": "UDP Reachable Ports [50000-53000]",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "buckets": null,
+                    "mode": "time",
+                    "name": null,
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:190",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:191",
+                        "format": "short",
+                        "label": null,
+                        "logBase": 1,
+                        "max": null,
+                        "min": null,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false,
+                    "alignLevel": null
+                }
+            },
+            {
+                "aliasColors": {},
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": "TimescaleDB",
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 12,
+                    "y": 48
                 },
                 "hiddenSeries": false,
                 "id": 22,
@@ -676,7 +676,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port = 5004 and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'udp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "rawSql": "SELECT \n  r.test_timestamp as \"time\",\n  r.port as \"Port\"\nFROM reachability_test_results r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability_test_results r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'udp' and\n  \t\tr.port = 5004 and\n  \t\tr.trigger_type in ($TriggerType) and\n  \t\t$__timeFilter(test_timestamp)\n  ) and\n  $__timeFilter(test_timestamp) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.test_id in ($TestId) and\n  r.reachability_type = 'udp'\ngroup by r.port, r.test_timestamp\norder by \"time\"",
                         "refId": "A",
                         "select": [
                             [
@@ -748,7 +748,7 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 74
+                    "y": 58
                 },
                 "id": 98,
                 "panels": [],
@@ -767,7 +767,7 @@
                     "h": 10,
                     "w": 12,
                     "x": 0,
-                    "y": 75
+                    "y": 59
                 },
                 "hiddenSeries": false,
                 "id": 6,
@@ -802,7 +802,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'tcp' and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'tcp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "rawSql": "SELECT \n  r.test_timestamp as \"time\",\n  r.port as \"Port\"\nFROM reachability_test_results r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability_test_results r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='true' and \n  \t\tr.reachability_type = 'tcp' and\n  \t\t$__timeFilter(test_timestamp) and\n  \t\tr.trigger_type in ($TriggerType)\n  ) and\n  $__timeFilter(test_timestamp) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='true' and \n  r.reachability_type = 'tcp' and\n  r.test_id in ($TestId) and\n  r.trigger_type in ($TriggerType)\ngroup by r.port, r.test_timestamp\norder by \"time\"",
                         "refId": "A",
                         "select": [
                             [
@@ -879,7 +879,7 @@
                     "h": 10,
                     "w": 12,
                     "x": 12,
-                    "y": 75
+                    "y": 59
                 },
                 "hiddenSeries": false,
                 "id": 8,
@@ -914,7 +914,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \n  r.test_time as \"time\",\n  r.port as \"Port\"\nFROM reachability r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'tcp' and\n  \t\t$__timeFilter(test_time)\n  ) and\n  $__timeFilter(test_time) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'tcp'\ngroup by r.port, r.test_time\norder by \"time\"",
+                        "rawSql": "SELECT \n  r.test_timestamp as \"time\",\n  r.port as \"Port\"\nFROM reachability_test_results r join organizations o on r.organization_id = o.organization_id\nWHERE \n  r.port in (\n  \tSELECT distinct port from reachability_test_results r join organizations o on r.organization_id = o.organization_id\n  \twhere \n  \t\to.organization_name in ('$OrganizationName') and \n  \t\tr.cluster_name in ($ClusterName) and \n  \t\tr.host_name in ($HostName) and \n  \t\tr.reachability='false' and \n  \t\tr.reachability_type = 'tcp' and\n  \t\t$__timeFilter(test_timestamp) and\n  \t\tr.trigger_type in ($TriggerType)\n  ) and\n  $__timeFilter(test_timestamp) and\n  o.organization_name IN ('$OrganizationName') and\n  r.cluster_name IN ($ClusterName) and\n  r.destination_cluster IN ($DestinationCluster) and\n  r.host_name IN ($HostName) and \n  r.reachability='false' and \n  r.reachability_type = 'tcp' and\n  r.test_id in ($TestId) and\n  r.trigger_type in ($TriggerType)\ngroup by r.port, r.test_timestamp\norder by \"time\"",
                         "refId": "A",
                         "select": [
                             [
@@ -986,7 +986,7 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 85
+                    "y": 69
                 },
                 "id": 108,
                 "panels": [],
@@ -1026,7 +1026,7 @@
                     "h": 11,
                     "w": 24,
                     "x": 0,
-                    "y": 86
+                    "y": 70
                 },
                 "id": 2,
                 "options": {
@@ -1039,7 +1039,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster_Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_time)",
+                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster_Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_timestamp as \"Test Time\", r.trigger_type as \"Trigger Type\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability_test_results r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='udp' and $__timeFilter(r.test_timestamp) and r.test_id in ($TestId) and r.trigger_type in ($TriggerType)",
                         "refId": "A",
                         "select": [
                             [
@@ -1072,7 +1072,7 @@
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 97
+                    "y": 81
                 },
                 "id": 118,
                 "panels": [],
@@ -1112,7 +1112,7 @@
                     "h": 11,
                     "w": 24,
                     "x": 0,
-                    "y": 98
+                    "y": 82
                 },
                 "id": 3,
                 "options": {
@@ -1125,7 +1125,7 @@
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_time as \"Test Time\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_time)",
+                        "rawSql": "select r.timestamp as \"Timestamp\", r.organization_id as \"Organization ID\", r.cluster_name as \"Cluster Name\", r.host_name as \"Host Name\", r.destination_cluster as \"Destination Cluster\", r.test_timestamp as \"Test Time\", r.trigger_type as \"Trigger Type\", r.reachability_type as \"Reachability Type\", r.port as \"Port\", r.reachability as \"Reachability\"\nfrom reachability_test_results r join organizations o on r.organization_id = o.organization_id\nwhere o.organization_name in ('$OrganizationName') and r.cluster_name in ($ClusterName) and r.host_name in ($HostName) and r.reachability_type='tcp' and $__timeFilter(r.test_timestamp) and r.trigger_type in ($TriggerType) and r.test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -1152,7 +1152,7 @@
                 "type": "table"
             }
         ],
-        "refresh": false,
+        "refresh": "",
         "schemaVersion": 30,
         "style": "dark",
         "tags": [],
@@ -1162,8 +1162,8 @@
                     "allValue": null,
                     "current": {
                         "selected": false,
-                        "text": "All",
-                        "value": "$__all"
+                        "text": "Canopus Homer Test 123 ",
+                        "value": "Canopus Homer Test 123 "
                     },
                     "datasource": "TimescaleDB",
                     "definition": "select distinct organization_name from organizations",
@@ -1190,7 +1190,7 @@
                         "value": "$__all"
                     },
                     "datasource": "TimescaleDB",
-                    "definition": "select distinct cluster_name from reachability r  join organizations o \non o.organization_id = r.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "definition": "select distinct cluster_name from reachability_test_results cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
                     "description": null,
                     "error": null,
                     "hide": 0,
@@ -1199,7 +1199,7 @@
                     "multi": false,
                     "name": "ClusterName",
                     "options": [],
-                    "query": "select distinct cluster_name from reachability r  join organizations o \non o.organization_id = r.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "query": "select distinct cluster_name from reachability_test_results cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1214,7 +1214,7 @@
                         "value": "$__all"
                     },
                     "datasource": "TimescaleDB",
-                    "definition": "select distinct host_name from reachability r join organizations o \non o.organization_id = r.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "definition": "select distinct host_name from reachability_test_results \nwhere cluster_name in ($ClusterName)",
                     "description": null,
                     "error": null,
                     "hide": 0,
@@ -1223,7 +1223,7 @@
                     "multi": false,
                     "name": "HostName",
                     "options": [],
-                    "query": "select distinct host_name from reachability r join organizations o \non o.organization_id = r.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "query": "select distinct host_name from reachability_test_results \nwhere cluster_name in ($ClusterName)",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1231,23 +1231,75 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
+                    "allValue": "",
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
                     "datasource": "TimescaleDB",
-                    "definition": "select distinct destination_cluster from reachability r",
+                    "definition": "select distinct rtr.destination_cluster from \nreachability_test_results rtr join organizations o on o.organization_id = rtr.organization_id \nwhere o.organization_name  IN ('$OrganizationName') and\nrtr.cluster_name in ($ClusterName) and\nrtr.host_name in ($HostName)",
                     "description": null,
                     "error": null,
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Destination Cluster",
-                    "multi": false,
+                    "multi": true,
                     "name": "DestinationCluster",
                     "options": [],
-                    "query": "select distinct destination_cluster from reachability r",
+                    "query": "select distinct rtr.destination_cluster from \nreachability_test_results rtr join organizations o on o.organization_id = rtr.organization_id \nwhere o.organization_name  IN ('$OrganizationName') and\nrtr.cluster_name in ($ClusterName) and\nrtr.host_name in ($HostName)",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": "",
+                    "current": {
+                        "selected": true,
+                        "text": [
+                            "Periodic"
+                        ],
+                        "value": [
+                            "Periodic"
+                        ]
+                    },
+                    "datasource": null,
+                    "definition": "select distinct trigger_type from reachability_test_results",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Select Trigger Type",
+                    "multi": true,
+                    "name": "TriggerType",
+                    "options": [],
+                    "query": "select distinct trigger_type from reachability_test_results",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "allValue": null,
+                    "current": {
+                        "selected": false,
+                        "text": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzo0MGVlMjYzZC00ODY3LTRhMDMtOTAwNi1jMzY1NTgyZDBjZjg",
+                        "value": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzo0MGVlMjYzZC00ODY3LTRhMDMtOTAwNi1jMzY1NTgyZDBjZjg"
+                    },
+                    "datasource": null,
+                    "definition": "select distinct rtr.test_id from reachability_test_results rtr join organizations o on o.organization_id = rtr.organization_id\nand o.organization_name in ('$OrganizationName') and rtr.cluster_name in ($ClusterName) and rtr.host_name in ($HostName)",
+                    "description": null,
+                    "error": null,
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Test ID",
+                    "multi": false,
+                    "name": "TestId",
+                    "options": [],
+                    "query": "select distinct rtr.test_id from reachability_test_results rtr join organizations o on o.organization_id = rtr.organization_id\nand o.organization_name in ('$OrganizationName') and rtr.cluster_name in ($ClusterName) and rtr.host_name in ($HostName)",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1262,9 +1314,9 @@
         },
         "timepicker": {},
         "timezone": "utc",
-        "title": "8. Reachability",
+        "title": "10. Reachability Test Results",
         "uid": "8zM3cyw7k",
-        "version": 3
+        "version": 9
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

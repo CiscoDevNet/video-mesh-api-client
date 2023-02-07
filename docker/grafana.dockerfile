@@ -1,5 +1,5 @@
 # Set base image as Ubuntu and install dependencies
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 RUN apt update -y
 RUN apt upgrade -y
 RUN apt install vim tar wget python3-pip libpq-dev python3-dev -y && pip3 install --upgrade pip
