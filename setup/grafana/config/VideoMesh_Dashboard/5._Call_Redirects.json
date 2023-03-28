@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,14 +23,17 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1673424565748,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -36,12 +42,21 @@
                 },
                 "id": 7,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -72,7 +87,10 @@
                 "type": "text"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -117,14 +135,19 @@
                     "text": {},
                     "textMode": "auto"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(cr.redirect_count) from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)",
+                        "rawSql": "select sum(cr.redirect_count) from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_timestamp) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)",
                         "refId": "A",
                         "select": [
                             [
@@ -136,6 +159,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -150,13 +190,18 @@
                 "type": "stat"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "palette-classic"
                         },
                         "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
                             "axisLabel": "",
                             "axisPlacement": "auto",
                             "axisSoftMin": 0,
@@ -167,7 +212,13 @@
                                 "tooltip": false,
                                 "viz": false
                             },
-                            "lineWidth": 1
+                            "lineWidth": 1,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
                         },
                         "mappings": [],
                         "thresholds": {
@@ -190,30 +241,41 @@
                 },
                 "id": 13,
                 "options": {
+                    "barRadius": 0,
                     "barWidth": 0.58,
+                    "fullHighlight": false,
                     "groupWidth": 0.7,
                     "legend": {
                         "calcs": [
                             "sum"
                         ],
                         "displayMode": "list",
-                        "placement": "bottom"
+                        "placement": "bottom",
+                        "showLegend": true
                     },
                     "orientation": "auto",
                     "showValue": "auto",
                     "stacking": "none",
                     "text": {},
                     "tooltip": {
-                        "mode": "single"
-                    }
+                        "mode": "single",
+                        "sort": "none"
+                    },
+                    "xTickLabelRotation": 0,
+                    "xTickLabelSpacing": 0
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(cr.redirect_count), cr.cluster_name from call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)\ngroup by cluster_name",
+                        "rawSql": "select sum(cr.redirect_count), cr.cluster_name from call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere $__timeFilter(cr.redirect_timestamp) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)\ngroup by cluster_name",
                         "refId": "A",
                         "select": [
                             [
@@ -225,6 +287,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -239,7 +318,10 @@
                 "type": "barchart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -267,6 +349,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "percent",
                             "value"
@@ -281,16 +364,22 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(cr.redirect_count), cr.reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_time) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)\ngroup by cr.reason ",
+                        "rawSql": "select sum(cr.redirect_count), cr.redirect_reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(cr.redirect_timestamp) and o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)\ngroup by cr.redirect_reason ",
                         "refId": "A",
                         "select": [
                             [
@@ -302,6 +391,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -317,7 +423,10 @@
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -326,17 +435,31 @@
                 },
                 "id": 63,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Call Redirects Trend per Cluster",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "palette-classic"
                         },
                         "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
                             "axisLabel": "",
                             "axisPlacement": "auto",
                             "barAlignment": 0,
@@ -384,7 +507,7 @@
                 },
                 "gridPos": {
                     "h": 12,
-                    "w": 6,
+                    "w": 12,
                     "x": 0,
                     "y": 15
                 },
@@ -393,10 +516,12 @@
                     "legend": {
                         "calcs": [],
                         "displayMode": "list",
-                        "placement": "bottom"
+                        "placement": "bottom",
+                        "showLegend": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "pluginVersion": "8.1.8",
@@ -404,11 +529,16 @@
                 "repeatDirection": "h",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select redirect_time as \"time\", redirect_count as \"Value\", reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(redirect_time) and cluster_name in ($ClusterName)\ngroup by redirect_time, redirect_count, reason\norder by time",
+                        "rawSql": "select redirect_timestamp as \"time\", redirect_count as \"Value\", redirect_reason from call_redirects cr join organizations o on cr.organization_id = o.organization_id\nwhere $__timeFilter(redirect_timestamp) and cluster_name in ($ClusterName)\ngroup by redirect_timestamp, redirect_count, redirect_reason\norder by time",
                         "refId": "A",
                         "select": [
                             [
@@ -420,6 +550,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -430,14 +577,15 @@
                         ]
                     }
                 ],
-                "timeFrom": null,
-                "timeShift": null,
                 "title": "Number of Call Redirects - $ClusterName",
                 "type": "timeseries"
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -446,11 +594,23 @@
                 },
                 "id": 70,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Call Redirects Details",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -458,15 +618,17 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "auto"
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "inspect": false
                         },
                         "mappings": [],
                         "thresholds": {
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -485,16 +647,29 @@
                 },
                 "id": 77,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cr.organization_id as \"Organization ID\", cr.cluster_name as \"Cluster Name\", cr.redirect_time as \"Redirect Time\", cr.redirect_count as \"Redirect Count\", cr.reason as \"Reason\", cr.remediation as \"Remediation\"\nfrom call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName)",
+                        "rawSql": "select cr.organization_id as \"Organization ID\", cr.cluster_name as \"Cluster Name\", cr.redirect_timestamp as \"Redirect Time\", cr.redirect_count as \"Redirect Count\", cr.redirect_reason as \"Reason\", cr.remediation as \"Remediation\"\nfrom call_redirects cr join organizations o on o.organization_id = cr.organization_id\nwhere o.organization_name in ('$OrganizationName') and cr.cluster_name in ($ClusterName) and $__timeFilter(cr.redirect_timestamp) ",
                         "refId": "A",
                         "select": [
                             [
@@ -506,6 +681,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -522,23 +714,24 @@
                 "type": "table"
             }
         ],
-        "refresh": false,
-        "schemaVersion": 30,
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct organization_name from organizations",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
@@ -553,23 +746,23 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct cluster_name from call_redirects ca join organizations o on o.organization_id = ca.organization_id  where organization_name in ('$OrganizationName')",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Cluster Name",
                     "multi": false,
                     "name": "ClusterName",
                     "options": [],
-                    "query": "select distinct cluster_name from call_redirects ca join organizations o on o.organization_id = ca.organization_id  where organization_name in ('$OrganizationName')",
+                    "query": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -586,7 +779,8 @@
         "timezone": "utc",
         "title": "5. Call Redirects",
         "uid": "rZAyJ7wnk",
-        "version": 2
+        "version": 5,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

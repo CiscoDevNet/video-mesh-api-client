@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,14 +23,17 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1673424564156,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -36,12 +42,21 @@
                 },
                 "id": 20,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -72,7 +87,10 @@
                 "type": "text"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -118,7 +136,7 @@
                             "text": "Partially Available"
                         }
                     ],
-                    "endField": "segment_end_time",
+                    "endField": "end_timestamp",
                     "experiments": {},
                     "labelFields": [
                         "availability"
@@ -126,18 +144,23 @@
                     "showYAxis": true,
                     "sortBy": "startTime",
                     "sortOrder": "asc",
-                    "startField": "segment_start_time",
+                    "startField": "start_timestamp",
                     "textField": "cluster_name"
                 },
                 "pluginVersion": "8.1.8",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select \n  timestamp as \"time\", \n  cluster_name, \n  availability, \n  segment_start_time, \n  segment_end_time \nfrom cluster_availability ca join organizations o on ca.organization_id = o.organization_id\nwhere \n  organization_name in ('$OrganizationName') and \n  cluster_name in ($ClusterName) and \n  $__timeFilter(segment_start_time)",
+                        "rawSql": "select \n  timestamp as \"time\", \n  cluster_name, \n  availability, \n  start_timestamp, \n  end_timestamp \nfrom cluster_availability ca join organizations o on ca.organization_id = o.organization_id\nwhere \n  organization_name in ('$OrganizationName') and \n  cluster_name in ($ClusterName) and \n  $__timeFilter(start_timestamp)",
                         "refId": "A",
                         "select": [
                             [
@@ -149,6 +172,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -163,7 +203,10 @@
                 "type": "marcusolsson-gantt-panel"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -171,8 +214,11 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "auto",
-                            "filterable": true
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "filterable": true,
+                            "inspect": false
                         },
                         "mappings": [],
                         "thresholds": {
@@ -212,17 +258,30 @@
                 },
                 "id": 2,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true,
                     "sortBy": []
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select timestamp as \"Timestamp\", organization_id as \"Organization ID\", cluster_id as \"Cluster ID\", cluster_name as \"Cluster Name\", num_online_nodes as \"Number of online Nodes\", num_offline_nodes as \"Number of offline Nodes\", availability as \"Availability\", segment_start_time as \"Segment Start Time\", segment_end_time as \"Segment End Time\" from cluster_availability ca \nwhere \n  $__timeFilter(segment_start_time) and \n  organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and \n  cluster_name in ($ClusterName)",
+                        "rawSql": "select timestamp as \"Timestamp\", organization_id as \"Organization ID\", cluster_id as \"Cluster ID\", cluster_name as \"Cluster Name\", online_nodes as \"Number of online Nodes\", offline_nodes as \"Number of offline Nodes\", availability as \"Availability\", start_timestamp as \"Segment Start Time\", end_timestamp as \"Segment End Time\" from cluster_availability ca \nwhere \n  $__timeFilter(start_timestamp) and \n  organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and \n  cluster_name in ($ClusterName)",
                         "refId": "A",
                         "select": [
                             [
@@ -234,6 +293,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -248,23 +324,24 @@
                 "type": "table"
             }
         ],
-        "refresh": false,
-        "schemaVersion": 30,
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct organization_name from organizations",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
@@ -279,23 +356,23 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct cluster_name from cluster_availability ca join organizations o on o.organization_id = ca.organization_id  where o.organization_name in ('$OrganizationName')",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Cluster Name",
                     "multi": false,
                     "name": "ClusterName",
                     "options": [],
-                    "query": "select distinct cluster_name from cluster_availability ca join organizations o on o.organization_id = ca.organization_id  where o.organization_name in ('$OrganizationName')",
+                    "query": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -312,7 +389,8 @@
         "timezone": "utc",
         "title": "2. Cluster Availability",
         "uid": "fIoA5ks7k",
-        "version": 2
+        "version": 4,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

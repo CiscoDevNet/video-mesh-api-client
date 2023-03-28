@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,14 +23,17 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1673424563364,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -36,12 +42,21 @@
                 },
                 "id": 18,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -72,7 +87,10 @@
                 "type": "text"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -100,6 +118,7 @@
                     "legend": {
                         "displayMode": "list",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -114,11 +133,16 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
@@ -151,11 +175,21 @@
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "thresholds"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
                         },
                         "mappings": [],
                         "thresholds": {
@@ -184,12 +218,14 @@
                 "options": {
                     "basemap": {
                         "config": {},
+                        "name": "Layer 0",
                         "type": "osm-standard"
                     },
                     "controls": {
                         "mouseWheelZoom": true,
                         "showAttribution": true,
                         "showDebug": false,
+                        "showMeasure": false,
                         "showScale": false,
                         "showZoom": true
                     },
@@ -212,23 +248,34 @@
                             "location": {
                                 "mode": "auto"
                             },
+                            "name": "Layer 1",
                             "type": "markers"
                         }
                     ],
+                    "tooltip": {
+                        "mode": "details"
+                    },
                     "view": {
+                        "allLayers": true,
                         "id": "coords",
                         "lat": 25.606689,
                         "lon": -0.41863,
                         "zoom": 2.05
                     }
                 },
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(nd.timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(nd.timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tnd.host_name \n\tfrom node_details nd join organizations o on o.organization_id = nd.organization_id \n\tjoin cluster_details cd on cd.node_id = nd.node_id\n)\n\tselect count(cc.city_name), cc.city_name, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"City\" = cc.city_name)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city_name, cc.latitude, cc.longitude",
+                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(nd.timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(nd.timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tnd.host_name \n\tfrom node_details nd join organizations o on o.organization_id = nd.organization_id \n\tjoin cluster_details cd on cd.node_id = nd.node_id\n)\n\tselect count(cc.city), cc.city, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"City\" = cc.city)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city, cc.latitude, cc.longitude",
                         "refId": "A",
                         "select": [
                             [
@@ -240,6 +287,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -256,7 +320,10 @@
                 "type": "geomap"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -284,6 +351,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "percent",
                             "value"
@@ -298,11 +366,16 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
@@ -335,12 +408,22 @@
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "description": "",
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "thresholds"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
                         },
                         "mappings": [],
                         "thresholds": {
@@ -369,53 +452,83 @@
                 "options": {
                     "basemap": {
                         "config": {},
+                        "name": "Layer 0",
                         "type": "osm-standard"
                     },
                     "controls": {
                         "mouseWheelZoom": true,
                         "showAttribution": true,
                         "showDebug": false,
+                        "showMeasure": false,
                         "showScale": false,
                         "showZoom": true
                     },
                     "layers": [
                         {
                             "config": {
-                                "color": {
-                                    "fixed": "dark-green"
-                                },
-                                "fillOpacity": 0.4,
-                                "shape": "circle",
                                 "showLegend": true,
-                                "size": {
-                                    "field": "count",
-                                    "fixed": 5,
-                                    "max": 30,
-                                    "min": 5
+                                "style": {
+                                    "color": {
+                                        "fixed": "dark-green"
+                                    },
+                                    "opacity": 0.4,
+                                    "rotation": {
+                                        "fixed": 0,
+                                        "max": 360,
+                                        "min": -360,
+                                        "mode": "mod"
+                                    },
+                                    "size": {
+                                        "field": "count",
+                                        "fixed": 5,
+                                        "max": 30,
+                                        "min": 5
+                                    },
+                                    "symbol": {
+                                        "fixed": "img/icons/marker/circle.svg",
+                                        "mode": "fixed"
+                                    },
+                                    "textConfig": {
+                                        "fontSize": 12,
+                                        "offsetX": 0,
+                                        "offsetY": 0,
+                                        "textAlign": "center",
+                                        "textBaseline": "middle"
+                                    }
                                 }
                             },
                             "location": {
                                 "mode": "auto"
                             },
+                            "name": "Layer 1",
                             "type": "markers"
                         }
                     ],
+                    "tooltip": {
+                        "mode": "details"
+                    },
                     "view": {
+                        "allLayers": true,
                         "id": "coords",
                         "lat": 25.606689,
                         "lon": -0.41863,
                         "zoom": 2.02
                     }
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tnd.host_name \n\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \n\tjoin node_details nd on nd.node_id = cd.node_id\n)\n\tselect count(cc.city_name), cc.city_name, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"Continent\" = cc.continent_name and t.\"City\" = cc.city_name)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city_name, cc.latitude, cc.longitude",
+                        "rawSql": "with t as (\n\tselect \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 1) as \"Continent\", \n\t\tsplit_part(cd.upgrade_schedule_timezone, '/', 2) as \"City\",\n\t\to.organization_name,\n\t\tcd.cluster_name, \n\t\tnd.host_name \n\tfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \n\tjoin node_details nd on nd.node_id = cd.node_id\n)\n\tselect count(cc.city), cc.city, cc.latitude, cc.longitude from t join city_coordinates cc on (t.\"Continent\" = cc.continent and t.\"City\" = cc.city)\n\twhere \n  \t\tt.organization_name in ('$OrganizationName') and \n  \t\tt.cluster_name in ($ClusterName) and\n  \t\tt.host_name in ($HostName)\n\tgroup by cc.city, cc.latitude, cc.longitude",
                         "refId": "A",
                         "select": [
                             [
@@ -427,6 +540,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -443,7 +573,10 @@
                 "type": "geomap"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -452,7 +585,11 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "color-background"
+                            "cellOptions": {
+                                "mode": "gradient",
+                                "type": "color-background"
+                            },
+                            "inspect": false
                         },
                         "mappings": [
                             {
@@ -475,8 +612,7 @@
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -495,11 +631,23 @@
                 },
                 "id": 12,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
@@ -532,7 +680,10 @@
                 "type": "table"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -541,8 +692,12 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "color-background",
-                            "filterable": true
+                            "cellOptions": {
+                                "mode": "gradient",
+                                "type": "color-background"
+                            },
+                            "filterable": true,
+                            "inspect": false
                         },
                         "mappings": [
                             {
@@ -565,8 +720,7 @@
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -585,17 +739,30 @@
                 },
                 "id": 8,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "create or replace function count_business_days(from_date date, to_date date)\nreturns bigint\nas $fbd$\n    select count(d::date) as d\n    from generate_series(from_date, to_date, '1 day'::interval) d\n    where extract('dow' from d) not in (0, 6) \n$fbd$ language sql;\n\nselect cd.organization_id as \"Organization ID\", cd.cluster_name as \"Cluster Name\", nd.host_name as \"Host Name\", cd.upgrade_pending as \"Upgrade Pending\", cd.next_upgrade_time as \"Next Upgrade Time\"  from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName) and\n  cd.upgrade_pending = 'true'\n  -- count_business_days(DATE(cd.next_upgrade_time), DATE(now()))  >= 2\norder by next_upgrade_time",
+                        "rawSql": "create or replace function count_business_days(from_date date, to_date date)\nreturns bigint\nas $fbd$\n    select count(d::date) as d\n    from generate_series(from_date, to_date, '1 day'::interval) d\n    where extract('dow' from d) not in (0, 6) \n$fbd$ language sql;\n\nselect cd.organization_id as \"Organization ID\", cd.cluster_name as \"Cluster Name\", nd.host_name as \"Host Name\", cd.upgrade_pending as \"Upgrade Pending\", cd.next_upgrade_timestamp as \"Next Upgrade Time\"  from cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cluster_name in ($ClusterName) and\n  host_name in ($HostName) and\n  cd.upgrade_pending = 'true'\n  -- count_business_days(DATE(cd.next_upgrade_time), DATE(now()))  >= 2\norder by next_upgrade_timestamp",
                         "refId": "B",
                         "select": [
                             [
@@ -607,6 +774,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -623,7 +807,10 @@
                 "type": "table"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -631,15 +818,17 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "auto"
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "inspect": false
                         },
                         "mappings": [],
                         "thresholds": {
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -659,16 +848,29 @@
                 },
                 "id": 6,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select \n  nd.host_name as \"Host name or IP\",\n  cd.next_upgrade_time as \"Next Upgrade Time\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cd.cluster_name in ($ClusterName) and\n  nd.host_name in ($HostName)\norder by cd.next_upgrade_time \n",
+                        "rawSql": "select \n  nd.host_name as \"Host name or IP\",\n  cd.next_upgrade_timestamp as \"Next Upgrade Time\"\nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id \njoin node_details nd on nd.node_id = cd.node_id\nwhere \n  organization_name in ('$OrganizationName') and\n  cd.cluster_name in ($ClusterName) and\n  nd.host_name in ($HostName)\norder by cd.next_upgrade_timestamp\n",
                         "refId": "A",
                         "select": [
                             [
@@ -680,6 +882,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -692,13 +911,14 @@
                         ]
                     }
                 ],
-                "timeFrom": null,
-                "timeShift": null,
                 "title": "Next Upgrade Schedule",
                 "type": "table"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -726,6 +946,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "percent",
                             "value"
@@ -740,11 +961,16 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
@@ -777,7 +1003,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -805,6 +1034,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "percent",
                             "value"
@@ -819,11 +1049,16 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
@@ -856,7 +1091,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -884,6 +1122,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -898,12 +1137,17 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "pluginVersion": "8.1.8",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
@@ -942,7 +1186,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -950,15 +1197,17 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "auto"
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "inspect": false
                         },
                         "mappings": [],
                         "thresholds": {
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -977,16 +1226,29 @@
                 },
                 "id": 2,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cd.last_updated_timestamp as \"Last Updated Timestamp\", cd.organization_id as \"Organization ID\", cd.cluster_id as \"Cluster ID\", cd.cluster_name as \"Cluster Name\", cd.node_id as \"Node ID\", nd.host_name as \"Host Name\", nd.deployment_type as \"Deployment Type\", \nnd.country_code as \"Country Code\", nd.city as \"City\", nd.timezone as \"Timezone\", cd.release_channel as \"Release Channel\", cd.upgrade_schedule_days as \"Upgrade Schedule Days\", TO_CHAR(cd.upgrade_schedule_time, 'HH12:MI:SS') as \"Upgrade Schedule Time\", cd.upgrade_schedule_timezone as \"Upgrade Schedule Timezone\"\nfrom cluster_details cd join node_details nd on nd.node_id = cd.node_id\nwhere cd.organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\ncd.cluster_name in (select cluster_name from cluster_details where cluster_name in ($ClusterName)) and\nnd.host_name in (select host_name from node_details where host_name in ($HostName))",
+                        "rawSql": "select cd.timestamp as \"Last Updated Timestamp\", cd.organization_id as \"Organization ID\", cd.cluster_id as \"Cluster ID\", cd.cluster_name as \"Cluster Name\", cd.node_id as \"Node ID\", nd.host_name as \"Host Name\", nd.deployment_type as \"Deployment Type\", \nnd.country_code as \"Country Code\", nd.city as \"City\", nd.timezone as \"Timezone\", cd.release_channel as \"Release Channel\", cd.upgrade_schedule_days as \"Upgrade Schedule Days\", TO_CHAR(cd.upgrade_schedule_time, 'HH12:MI:SS') as \"Upgrade Schedule Time\", cd.upgrade_schedule_timezone as \"Upgrade Schedule Timezone\"\nfrom cluster_details cd join node_details nd on nd.node_id = cd.node_id\nwhere cd.organization_id in (select organization_id from organizations where organization_name in ('$OrganizationName')) and\ncd.cluster_name in (select cluster_name from cluster_details where cluster_name in ($ClusterName)) and\nnd.host_name in (select host_name from node_details where host_name in ($HostName))",
                         "refId": "A",
                         "select": [
                             [
@@ -998,6 +1260,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -1014,23 +1293,24 @@
                 "type": "table"
             }
         ],
-        "refresh": false,
-        "schemaVersion": 30,
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct organization_name from organizations o",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
@@ -1045,16 +1325,16 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct cluster_name from cluster_details cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Cluster Name",
@@ -1069,16 +1349,16 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct host_name from node_details nd join organizations o on nd.organization_id = o.organization_id \njoin cluster_details cd on nd.node_id = cd.node_id\nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName) ",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Host Name",
@@ -1102,7 +1382,8 @@
         "timezone": "utc",
         "title": "1. Cluster and Node Details",
         "uid": "IMEloHXnz",
-        "version": 2
+        "version": 3,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

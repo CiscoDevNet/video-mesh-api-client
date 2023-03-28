@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,14 +23,17 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1673424565118,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -36,12 +42,21 @@
                 },
                 "id": 2,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -72,7 +87,10 @@
                 "type": "text"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -117,14 +135,19 @@
                     "text": {},
                     "textMode": "auto"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(co.overflow_count) from cloud_overflow co join organizations o on o.organization_id = co.organization_id\nwhere $__timeFilter(co.overflow_time) and o.organization_name in ('$OrganizationName')",
+                        "rawSql": "select sum(co.overflow_count) from cloud_overflow co join organizations o on o.organization_id = co.organization_id\nwhere $__timeFilter(co.overflow_timestamp) and o.organization_name in ('$OrganizationName')",
                         "refId": "A",
                         "select": [
                             [
@@ -136,6 +159,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -150,7 +190,10 @@
                 "type": "stat"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -180,6 +223,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "percent",
                             "value"
@@ -194,16 +238,22 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select sum(co.overflow_count), co.reason \nfrom cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_time) and o.organization_name in ('$OrganizationName')\ngroup by reason ",
+                        "rawSql": "select sum(co.overflow_count), co.overflow_reason \nfrom cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_timestamp) and o.organization_name in ('$OrganizationName')\ngroup by overflow_reason ",
                         "refId": "A",
                         "select": [
                             [
@@ -215,6 +265,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -230,7 +297,10 @@
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -239,17 +309,31 @@
                 },
                 "id": 19,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Cloud Overflow Trend",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "palette-classic"
                         },
                         "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
                             "axisLabel": "",
                             "axisPlacement": "auto",
                             "barAlignment": 0,
@@ -305,10 +389,12 @@
                     "legend": {
                         "calcs": [],
                         "displayMode": "list",
-                        "placement": "bottom"
+                        "placement": "bottom",
+                        "showLegend": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "pluginVersion": "8.1.8",
@@ -316,11 +402,16 @@
                 "repeatDirection": "h",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select co.overflow_time  as \"time\", co.overflow_count as \"Value\", co.reason\nfrom cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_time) and o.organization_name in ('$OrganizationName')\ngroup by co.overflow_time, co.overflow_count, co.reason",
+                        "rawSql": "select co.overflow_timestamp  as \"time\", co.overflow_count as \"Value\", co.overflow_reason\nfrom cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_timestamp) and o.organization_name in ('$OrganizationName')\ngroup by co.overflow_timestamp, co.overflow_count, co.overflow_reason",
                         "refId": "A",
                         "select": [
                             [
@@ -332,6 +423,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -342,14 +450,15 @@
                         ]
                     }
                 ],
-                "timeFrom": null,
-                "timeShift": null,
                 "title": "Cloud Overflows - $OrganizationName",
                 "type": "timeseries"
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -358,11 +467,23 @@
                 },
                 "id": 15,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Cloud Overflow Details",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -370,7 +491,10 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "auto"
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "inspect": false
                         },
                         "mappings": [],
                         "thresholds": {
@@ -397,18 +521,31 @@
                 },
                 "id": 8,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "repeat": "OrganizationName",
                 "repeatDirection": "h",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select o.organization_id as \"Organization ID\", overflow_time as \"Overflow Time\", overflow_count as \"Overflow Count\", reason as \"Reason\", remediation as \"Remediation\" from cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_time) and o.organization_name in ('$OrganizationName')",
+                        "rawSql": "select o.organization_id as \"Organization ID\", overflow_timestamp as \"Overflow Time\", overflow_count as \"Overflow Count\", overflow_reason as \"Reason\", remediation as \"Remediation\" from cloud_overflow co join organizations o on o.organization_id = co.organization_id \nwhere $__timeFilter(co.overflow_timestamp) and o.organization_name in ('$OrganizationName')",
                         "refId": "A",
                         "select": [
                             [
@@ -420,6 +557,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "timeColumn": "time",
                         "where": [
                             {
@@ -430,28 +584,28 @@
                         ]
                     }
                 ],
-                "timeFrom": null,
-                "timeShift": null,
                 "title": "Cloud Overflow Details - $OrganizationName",
                 "type": "table"
             }
         ],
-        "schemaVersion": 30,
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct organization_name from organizations",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
@@ -475,7 +629,8 @@
         "timezone": "utc",
         "title": "4. Cloud Overflow",
         "uid": "E3BC-nQ7z",
-        "version": 2
+        "version": 2,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

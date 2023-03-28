@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,14 +23,17 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1674803909009,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -36,12 +42,21 @@
                 },
                 "id": 5,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -73,7 +88,10 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -82,11 +100,23 @@
                 },
                 "id": 14,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "WebexCloud",
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -147,6 +177,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -161,17 +192,23 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(*) as \"Success\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Success' and ctr.service_type = 'WebexCloud'",
+                        "rawSql": "select count(*) as \"Success\" from network_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.test_id in ($TestId) and\nntr.test_result = 'Success' and ntr.service_type = 'WebexCloud'",
                         "refId": "A",
                         "select": [
                             [
@@ -183,6 +220,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -195,12 +249,17 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(*) as \"Failed\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Failed' and ctr.service_type = 'WebexCloud'",
+                        "rawSql": "select count(*) as \"Failed\" from network_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.test_id in ($TestId) and\nntr.test_result = 'Failed' and ntr.service_type = 'WebexCloud'",
                         "refId": "B",
                         "select": [
                             [
@@ -212,6 +271,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -228,7 +304,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -319,6 +398,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -333,17 +413,23 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_type, count(ctr.test_result) from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'WebexCloud' and\nctr.test_result = 'Success' and\nctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type ",
+                        "rawSql": "select ntr.test_type, count(ntr.test_result) from \nnetwork_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.service_type = 'WebexCloud' and\nntr.test_result = 'Success' and\nntr.test_id in ($TestId)\ngroup by ntr.test_result , ntr.test_type ",
                         "refId": "A",
                         "select": [
                             [
@@ -355,6 +441,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -371,7 +474,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -430,6 +536,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -444,16 +551,22 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_type, count(ctr.test_result) as \"Failed\" from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'WebexCloud' and\nctr.test_result = 'Failed' and\nctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type",
+                        "rawSql": "select ntr.test_type, count(ntr.test_result) as \"Failed\" from \nnetwork_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.service_type = 'WebexCloud' and\nntr.test_result = 'Failed' and\nntr.test_id in ($TestId)\ngroup by ntr.test_result , ntr.test_type",
                         "refId": "A",
                         "select": [
                             [
@@ -465,6 +578,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -481,13 +611,18 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "palette-classic"
                         },
                         "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
                             "axisLabel": "",
                             "axisPlacement": "auto",
                             "barAlignment": 0,
@@ -615,19 +750,26 @@
                     "legend": {
                         "calcs": [],
                         "displayMode": "list",
-                        "placement": "bottom"
+                        "placement": "bottom",
+                        "showLegend": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result - \"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere\no.organization_name in ('$OrganizationName') and\nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and\nctr.trigger_type in ($TriggerType) and \nctr.service_type = 'WebexCloud' and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId)\ngroup by ctr.test_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "rawSql": "select ntr.test_timestamp as \"time\", ntr.test_type,\ncase when(ntr.test_result = 'Success') then 1 else 0 end as \"Test Result - \"\nfrom network_test_results ntr join organizations o on o.organization_id = ntr.organization_id\nwhere\no.organization_name in ('$OrganizationName') and\nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and\nntr.trigger_type in ($TriggerType) and \nntr.service_type = 'WebexCloud' and\n$__timeFilter(ntr.test_timestamp) and\nntr.test_id in ($TestId)\ngroup by ntr.test_type, ntr.test_timestamp, ntr.test_result \norder by ntr.test_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -639,6 +781,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -651,12 +810,17 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "hide": true,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result for ThirdPartyCloud:\"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere ctr.trigger_type = 'Periodic' and ctr.service_type = 'ThirdPartyCloud' and ctr.test_id in ($TestId)\no.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName)\ngroup by ctr.test_type, ctr.service_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "rawSql": "select ntr.test_timestamp as \"time\", ntr.test_type,\ncase when(ntr.test_result = 'Success') then 1 else 0 end as \"Test Result for ThirdPartyCloud:\"\nfrom network_test_results ntr join organizations o on o.organization_id = ntr.organization_id\nwhere ntr.trigger_type = 'Periodic' and ntr.service_type = 'ThirdPartyCloud' and ntr.test_id in ($TestId) and\no.organization_name in ('$OrganizationName') and ntr.cluster_name in ($ClusterName) and ntr.host_name in ($HostName)\ngroup by ntr.test_type, ntr.service_type, ntr.test_timestamp, ntr.test_result \norder by ntr.test_timestamp",
                         "refId": "B",
                         "select": [
                             [
@@ -668,6 +832,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -685,7 +866,10 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -694,11 +878,23 @@
                 },
                 "id": 16,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "ThirdPartyCloud",
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -759,6 +955,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -773,17 +970,23 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(*) as \"Success\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Success' and ctr.service_type = 'ThirdPartyCloud'",
+                        "rawSql": "select count(*) as \"Success\" from network_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.test_id in ($TestId) and\nntr.test_result = 'Success' and ntr.service_type = 'ThirdPartyCloud'",
                         "refId": "A",
                         "select": [
                             [
@@ -795,6 +998,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -807,12 +1027,17 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(*) as \"Failed\" from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId) and\nctr.test_result = 'Failed' and ctr.service_type = 'ThirdPartyCloud'",
+                        "rawSql": "select count(*) as \"Failed\" from network_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.test_id in ($TestId) and\nntr.test_result = 'Failed' and ntr.service_type = 'ThirdPartyCloud'",
                         "refId": "B",
                         "select": [
                             [
@@ -824,6 +1049,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -840,7 +1082,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -931,6 +1176,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -945,16 +1191,22 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_type, count(ctr.test_result) as \"Success\" from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'ThirdPartyCloud' and\nctr.test_result = 'Success' and ctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type ",
+                        "rawSql": "select ntr.test_type, count(ntr.test_result) as \"Success\" from \nnetwork_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.service_type = 'ThirdPartyCloud' and\nntr.test_result = 'Success' and ntr.test_id in ($TestId)\ngroup by ntr.test_result , ntr.test_type ",
                         "refId": "A",
                         "select": [
                             [
@@ -966,6 +1218,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -982,7 +1251,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1011,6 +1283,7 @@
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -1025,16 +1298,22 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_type, count(ctr.test_result) as \"Failed\" from \nconnectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and \nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.service_type = 'ThirdPartyCloud' and\nctr.test_result = 'Failed' and ctr.test_id in ($TestId)\ngroup by ctr.test_result , ctr.test_type ",
+                        "rawSql": "select ntr.test_type, count(ntr.test_result) as \"Failed\" from \nnetwork_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere o.organization_name in ('$OrganizationName') and \nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and \nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.service_type = 'ThirdPartyCloud' and\nntr.test_result = 'Failed' and ntr.test_id in ($TestId)\ngroup by ntr.test_result , ntr.test_type ",
                         "refId": "A",
                         "select": [
                             [
@@ -1046,6 +1325,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -1062,13 +1358,18 @@
                 "type": "piechart"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
                             "mode": "palette-classic"
                         },
                         "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
                             "axisLabel": "",
                             "axisPlacement": "auto",
                             "barAlignment": 0,
@@ -1101,8 +1402,7 @@
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -1124,19 +1424,26 @@
                     "legend": {
                         "calcs": [],
                         "displayMode": "list",
-                        "placement": "bottom"
+                        "placement": "bottom",
+                        "showLegend": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result - \"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere\no.organization_name in ('$OrganizationName') and\nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and\nctr.trigger_type in ($TriggerType) and \nctr.service_type = 'ThirdPartyCloud' and\n$__timeFilter(ctr.test_timestamp) and ctr.test_id in ($TestId)\ngroup by ctr.test_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "rawSql": "select ntr.test_timestamp as \"time\", ntr.test_type,\ncase when(ntr.test_result = 'Success') then 1 else 0 end as \"Test Result - \"\nfrom network_test_results ntr join organizations o on o.organization_id = ntr.organization_id\nwhere\no.organization_name in ('$OrganizationName') and\nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and\nntr.trigger_type in ($TriggerType) and \nntr.service_type = 'ThirdPartyCloud' and\n$__timeFilter(ntr.test_timestamp) and ntr.test_id in ($TestId)\ngroup by ntr.test_type, ntr.test_timestamp, ntr.test_result \norder by ntr.test_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -1148,6 +1455,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -1160,12 +1484,17 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "hide": true,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_timestamp as \"time\", ctr.test_type,\ncase when(ctr.test_result = 'Success') then 1 else 0 end as \"Test Result for ThirdPartyCloud:\"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nwhere ctr.trigger_type = 'Periodic' and ctr.service_type = 'ThirdPartyCloud' and\no.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName) and ctr.test_id in ($TestId)\ngroup by ctr.test_type, ctr.service_type, ctr.test_timestamp, ctr.test_result \norder by ctr.test_timestamp",
+                        "rawSql": "select ntr.test_timestamp as \"time\", ntr.test_type,\ncase when(ntr.test_result = 'Success') then 1 else 0 end as \"Test Result for ThirdPartyCloud:\"\nfrom network_test_results ntr join organizations o on o.organization_id = ntr.organization_id\nwhere ntr.trigger_type = 'Periodic' and ntr.service_type = 'ThirdPartyCloud' and\no.organization_name in ('$OrganizationName') and ntr.cluster_name in ($ClusterName) and ntr.host_name in ($HostName) and ntr.test_id in ($TestId)\ngroup by ntr.test_type, ntr.service_type, ntr.test_timestamp, ntr.test_result \norder by ntr.test_timestamp",
                         "refId": "B",
                         "select": [
                             [
@@ -1177,6 +1506,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -1194,7 +1540,10 @@
             },
             {
                 "collapsed": false,
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -1203,11 +1552,23 @@
                 },
                 "id": 19,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Connectivity Test Results",
                 "type": "row"
             },
             {
-                "datasource": null,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -1216,8 +1577,12 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "color-background",
-                            "filterable": true
+                            "cellOptions": {
+                                "mode": "gradient",
+                                "type": "color-background"
+                            },
+                            "filterable": true,
+                            "inspect": false
                         },
                         "mappings": [
                             {
@@ -1240,8 +1605,7 @@
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 }
                             ]
                         }
@@ -1256,16 +1620,29 @@
                 },
                 "id": 21,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select ctr.test_timestamp as \"Test Timestamp\", \nctr.test_id as \"Test ID\",\no.organization_name as \"Organization Name\", \nctr.cluster_name as \"Cluster Name\", \nctr.host_name as \"Host Name\", \nctr.test_type as \"Test Type\", \nctr.service_type as \"Service Type\", \nctr.test_result as \"Test Result\",\nctr.failure_reason as \"Failure Reason\",\nctr.possible_remediation as \"Possible Remediation\"\nfrom connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id \nwhere\no.organization_name in ('$OrganizationName') and\nctr.cluster_name in ($ClusterName) and \nctr.host_name in ($HostName) and\nctr.trigger_type in ($TriggerType) and\n$__timeFilter(ctr.test_timestamp) and\nctr.test_id in ($TestId)",
+                        "rawSql": "select ntr.test_timestamp as \"Test Timestamp\", \nntr.test_id as \"Test ID\",\no.organization_name as \"Organization Name\", \nntr.cluster_name as \"Cluster Name\", \nntr.host_name as \"Host Name\", \nntr.test_type as \"Test Type\", \nntr.service_type as \"Service Type\", \nntr.test_result as \"Test Result\",\nntr.failure_reason as \"Failure Reason\",\nntr.possible_remediation as \"Possible Remediation\"\nfrom network_test_results ntr join organizations o on o.organization_id = ntr.organization_id \nwhere\no.organization_name in ('$OrganizationName') and\nntr.cluster_name in ($ClusterName) and \nntr.host_name in ($HostName) and\nntr.trigger_type in ($TriggerType) and\n$__timeFilter(ntr.test_timestamp) and\nntr.test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -1277,6 +1654,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -1294,22 +1688,23 @@
             }
         ],
         "refresh": "",
-        "schemaVersion": 30,
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "Canopus Homer Test 123 ",
                         "value": "Canopus Homer Test 123 "
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct organization_name from organizations o",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
@@ -1324,23 +1719,23 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct cluster_name from connectivity_test_results cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Cluster Name",
                     "multi": false,
                     "name": "ClusterName",
                     "options": [],
-                    "query": "select distinct cluster_name from connectivity_test_results cd join organizations o on cd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName')",
+                    "query": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1348,23 +1743,23 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct host_name from connectivity_test_results nd join organizations o on nd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and nd.cluster_name in ($ClusterName) ",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct host_name \nfrom node_details nd join organizations o on o.organization_id = nd.organization_id  \njoin cluster_details cd on cd.cluster_id = nd.cluster_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName)",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Host Name",
                     "multi": false,
                     "name": "HostName",
                     "options": [],
-                    "query": "select distinct host_name from connectivity_test_results nd join organizations o on nd.organization_id = o.organization_id \nwhere o.organization_name in ('$OrganizationName') and nd.cluster_name in ($ClusterName) ",
+                    "query": "select distinct host_name \nfrom node_details nd join organizations o on o.organization_id = nd.organization_id  \njoin cluster_details cd on cd.cluster_id = nd.cluster_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName)",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1372,7 +1767,6 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": true,
                         "text": [
@@ -1382,17 +1776,18 @@
                             "Periodic"
                         ]
                     },
-                    "datasource": null,
-                    "definition": "select distinct trigger_type from connectivity_test_results",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct trigger_type from network_test_results",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Trigger Type",
                     "multi": true,
                     "name": "TriggerType",
                     "options": [],
-                    "query": "select distinct trigger_type from connectivity_test_results",
+                    "query": "select distinct trigger_type from network_test_results",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1400,23 +1795,23 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzpmYjdlOGRjMi0wZTkxLTQ3ZjItYWFiNi04NGE5YjZmMDI1YTI",
                         "value": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzpmYjdlOGRjMi0wZTkxLTQ3ZjItYWFiNi04NGE5YjZmMDI1YTI"
                     },
-                    "datasource": null,
-                    "definition": "select distinct ctr.test_id from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nand o.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName)",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct ntr.test_id from network_test_results ntr join organizations o on o.organization_id = ntr.organization_id\nand o.organization_name in ('$OrganizationName') and ntr.cluster_name in ($ClusterName) and ntr.host_name in ($HostName)",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Test ID",
                     "multi": false,
                     "name": "TestId",
                     "options": [],
-                    "query": "select distinct ctr.test_id from connectivity_test_results ctr join organizations o on o.organization_id = ctr.organization_id\nand o.organization_name in ('$OrganizationName') and ctr.cluster_name in ($ClusterName) and ctr.host_name in ($HostName)",
+                    "query": "select distinct ntr.test_id from network_test_results ntr join organizations o on o.organization_id = ntr.organization_id\nand o.organization_name in ('$OrganizationName') and ntr.cluster_name in ($ClusterName) and ntr.host_name in ($HostName)",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -1431,9 +1826,10 @@
         },
         "timepicker": {},
         "timezone": "utc",
-        "title": "8. Network Test Results",
+        "title": "7. Network Test Results",
         "uid": "SkN7_ZK4k",
-        "version": 12
+        "version": 6,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"
