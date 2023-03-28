@@ -1,7 +1,7 @@
 services:
   web:
     build:
-      context: ../
+      context: ..
       dockerfile: docker/flask.dockerfile
     ports:
       - "2808:2808"
@@ -10,7 +10,7 @@ services:
       - timescale
   grafana:
     build:
-      context: ../
+      context: ..
       dockerfile: docker/grafana.dockerfile
     ports:
       - "3000:3000"
@@ -20,7 +20,7 @@ services:
       - GF_INSTALL_PLUGINS=grafana-piechart-panel,aidanmountford-html-panel,goshposh-metaqueries-datasource,grafana-worldmap-panel,marcusolsson-gantt-panel
     container_name: grafana
   timescale:
-    image: timescale/timescaledb:latest-pg12
+    image: timescale/timescaledb:latest-pg15
     ports:
       - "5432:5432"
     environment:
@@ -29,4 +29,4 @@ services:
       - POSTGRES_DB=postgres
     volumes:
       - ../timescale_data:/var/lib/postgresql/data
-    container_name: videoMeshTimescaleDB
+    container_name: videoMeshAPITimescaleDB

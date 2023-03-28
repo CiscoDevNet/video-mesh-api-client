@@ -1,0 +1,25 @@
+app:
+  # Configuration for the Flask app
+  logging_config: app/conf/logging.conf # path to logging config file. If this is not set, the default params will be used
+  host: 0.0.0.0 # host to bind to
+  port: 2808 # port to bind to
+  debug: false # Debug mode
+  time: 30 # Time period in minutes to fetch data for
+  update_interval_minutes: 10 # Interval in minutes to update the data
+  auth_interval_hours: 24 # Interval in hours to refresh the auth and refresh tokens
+
+api:
+  # Configuration for the Webex Developer APIs
+  host: https://webexapis.com/v1
+  integration:
+    client_id:
+    client_secret:
+    redirect_uri: http://localhost:2808/oauth
+  database:
+    # Configuration for the database
+    url: postgresql://timescale:timescale@videoMeshAPITimescaleDB:5432/postgres
+
+grafana:
+  # Configuration for the Grafana Dashboard
+  host: http://localhost:3000 # URL to the Grafana instance
+  key:

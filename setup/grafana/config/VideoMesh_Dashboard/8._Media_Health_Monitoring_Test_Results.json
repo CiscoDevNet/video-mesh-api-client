@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,28 +23,40 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1673424566716,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
                     "x": 0,
                     "y": 0
                 },
-                "id": 16,
+                "id": 20,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -72,7 +87,304 @@
                 "type": "text"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "0": {
+                                        "color": "red",
+                                        "index": 0,
+                                        "text": "0"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Disabled"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "red",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 0,
+                    "y": 3
+                },
+                "id": 2,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "center",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "text": {},
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(distinct mhm.cluster_id) as \"Enabled\" from media_health_monitoring_test_results mhm\njoin organizations org on org.organization_id = mhm.organization_id\njoin cluster_details c on c.cluster_id = mhm.cluster_id\njoin node_details n on n.node_id = mhm.node_id\nwhere org.organization_name in ('$OrganizationName') and\nc.cluster_name in ($ClusterName) and\nn.host_name in ($HostName)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select (y.b - x.a) as \"Disabled\" from (select count(distinct c.cluster_id) as \"b\" from organizations org\njoin cluster_details c on c.organization_id = org.organization_id\njoin node_details n on n.cluster_id = c.cluster_id\nwhere org.organization_name in ('$OrganizationName') and\nc.cluster_name in ($ClusterName) and\nn.host_name in ($HostName)) y,\n(select count(distinct mhm.cluster_id) as \"a\" from media_health_monitoring_test_results mhm \njoin organizations org on org.organization_id = mhm.organization_id\njoin cluster_details c on c.cluster_id = mhm.cluster_id\njoin node_details n on n.node_id = mhm.node_id\nwhere org.organization_name in ('$OrganizationName') and\nc.cluster_name in ($ClusterName) ) x",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Clusters",
+                "type": "stat"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "0": {
+                                        "color": "red",
+                                        "index": 0,
+                                        "text": "0"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Disabled"
+                            },
+                            "properties": [
+                                {
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "red",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 12,
+                    "x": 12,
+                    "y": 3
+                },
+                "id": 6,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "center",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "text": {},
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(distinct mhm.node_id) as \"Enabled\" from media_health_monitoring_test_results mhm\njoin organizations org on org.organization_id = mhm.organization_id\njoin cluster_details c on c.cluster_id = mhm.cluster_id\njoin node_details n on n.node_id = mhm.node_id\nwhere org.organization_name in ('$OrganizationName') and\nc.cluster_name in ($ClusterName) and\nn.host_name in ($HostName)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select (y.b - x.a) as \"Disabled\" from (select count(distinct n.node_id) as \"b\" from organizations org\njoin cluster_details c on c.organization_id = org.organization_id\njoin node_details n on n.cluster_id = c.cluster_id\nwhere org.organization_name in ('$OrganizationName') and\nc.cluster_name in ($ClusterName) and\nn.host_name in ($HostName)) y,\n(select count(distinct mhm.node_id) as \"a\" from media_health_monitoring_test_results mhm\njoin organizations org on org.organization_id = mhm.organization_id\njoin cluster_details c on c.cluster_id = mhm.cluster_id\njoin node_details n on n.node_id = mhm.node_id\nwhere org.organization_name in ('$OrganizationName') and\nc.cluster_name in ($ClusterName) ) x",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Nodes",
+                "type": "stat"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -149,13 +461,14 @@
                     "h": 16,
                     "w": 8,
                     "x": 0,
-                    "y": 3
+                    "y": 10
                 },
-                "id": 86,
+                "id": 22,
                 "options": {
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -170,17 +483,21 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
-                "repeat": null,
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_tool mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere test_name = 'SIP Signalling' and $__timeFilter(test_time) and test_result = 'Success' and organization_name in ('$OrganizationName') and cluster_name in ($ClusterName) and host_name in ($HostName)",
+                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_test_results mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere test_name = 'SIP Signalling' and $__timeFilter(test_timestamp) and test_result = 'Success' and organization_name in ('$OrganizationName') and cluster_name in ($ClusterName) and host_name in ($HostName) and trigger_type in ($TriggerType)\nand test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -202,12 +519,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_tool mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere failure_reason is NOT NULL and test_name = 'SIP Signalling' and $__timeFilter(test_time) and test_result = 'Failed' and organization_name in ('$OrganizationName')  and cluster_name in ($ClusterName) and host_name in ($HostName)\ngroup by failure_reason",
+                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_test_results mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere failure_reason is NOT NULL and test_name = 'SIP Signalling' and $__timeFilter(test_timestamp) and test_result = 'Failed' and organization_name in ('$OrganizationName')  and cluster_name in ($ClusterName) and host_name in ($HostName) and trigger_type in ($TriggerType) and test_id in ($TestId)\ngroup by failure_reason",
                         "refId": "B",
                         "select": [
                             [
@@ -235,7 +556,10 @@
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -289,8 +613,7 @@
                                     "mode": "exclude",
                                     "names": [
                                         "Success",
-                                        "count",
-                                        "null"
+                                        "count"
                                     ],
                                     "prefix": "All except:",
                                     "readOnly": true
@@ -313,13 +636,14 @@
                     "h": 16,
                     "w": 8,
                     "x": 8,
-                    "y": 3
+                    "y": 10
                 },
-                "id": 215,
+                "id": 23,
                 "options": {
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -334,16 +658,21 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_tool mhmt join organizations o on mhmt.organization_id = o.organization_id\nwhere test_name = 'Media Cascade' and $__timeFilter(test_time) and test_result = 'Success' and organization_name in ('$OrganizationName') and cluster_name in ($ClusterName) and host_name in ($HostName)",
+                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_test_results mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere test_name = 'Media Signalling' and $__timeFilter(test_timestamp) and test_result = 'Success' and organization_name in ('$OrganizationName') and cluster_name in ($ClusterName) and host_name in ($HostName) and trigger_type in ($TriggerType) and test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -365,12 +694,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_tool mhmt join organizations o on mhmt.organization_id = o.organization_id\nwhere failure_reason is NOT NULL and test_name = 'Media Cascade' and $__timeFilter(test_time) and test_result = 'Failed' and organization_name in ('$OrganizationName') and cluster_name in ($ClusterName) and host_name in ($HostName)\ngroup by failure_reason",
+                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_test_results mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere failure_reason is NOT NULL and test_name = 'Media Signalling' and $__timeFilter(test_timestamp) and test_result = 'Failed' and organization_name in ('$OrganizationName')  and cluster_name in ($ClusterName) and host_name in ($HostName) and trigger_type in ($TriggerType) and test_id in ($TestId)\ngroup by failure_reason",
                         "refId": "B",
                         "select": [
                             [
@@ -394,11 +727,14 @@
                         ]
                     }
                 ],
-                "title": "Media Cascade Distribution - Overall",
+                "title": "Media Signalling Distribution - Overall",
                 "type": "piechart"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -475,13 +811,14 @@
                     "h": 16,
                     "w": 8,
                     "x": 16,
-                    "y": 3
+                    "y": 10
                 },
-                "id": 216,
+                "id": 24,
                 "options": {
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -496,16 +833,21 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_tool mhmt join organizations o on mhmt.organization_id = o.organization_id\nwhere test_name = 'Media Signalling' and $__timeFilter(test_time) and test_result = 'Success' and organization_name in ('$OrganizationName')  and cluster_name in ($ClusterName) and host_name in ($HostName)",
+                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_test_results mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere test_name = 'Media Cascade' and $__timeFilter(test_timestamp) and test_result = 'Success' and organization_name in ('$OrganizationName') and cluster_name in ($ClusterName) and host_name in ($HostName) and trigger_type in ($TriggerType) and test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -527,12 +869,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_tool mhmt join organizations o on mhmt.organization_id = o.organization_id\nwhere failure_reason is NOT NULL and test_name = 'Media Signalling' and $__timeFilter(test_time) and test_result = 'Failed' and organization_name in ('$OrganizationName')  and cluster_name in ($ClusterName) and host_name in ($HostName)\ngroup by failure_reason",
+                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_test_results mhmt join organizations o on o.organization_id = mhmt.organization_id\nwhere failure_reason is NOT NULL and test_name = 'Media Cascade' and $__timeFilter(test_timestamp) and test_result = 'Failed' and organization_name in ('$OrganizationName')  and cluster_name in ($ClusterName) and host_name in ($HostName) and trigger_type in ($TriggerType) and test_id in ($TestId)\ngroup by failure_reason",
                         "refId": "B",
                         "select": [
                             [
@@ -556,25 +902,40 @@
                         ]
                     }
                 ],
-                "title": "Media Singalling Distribution - Overall",
+                "title": "Media Cascade  Distribution - Overall",
                 "type": "piechart"
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 19
+                    "y": 26
                 },
-                "id": 58,
+                "id": 26,
                 "panels": [],
-                "title": "SIP Signalling - Distribution",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
+                "title": "SIP Signalling Distribution",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -624,15 +985,16 @@
                 },
                 "gridPos": {
                     "h": 12,
-                    "w": 24,
+                    "w": 12,
                     "x": 0,
-                    "y": 20
+                    "y": 27
                 },
-                "id": 6,
+                "id": 28,
                 "options": {
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -647,19 +1009,24 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "repeat": "HostName",
                 "repeatDirection": "h",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Success'",
+                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Success' and trigger_type in ($TriggerType) and test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -681,12 +1048,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_tool mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Failed'\ngroup by failure_reason",
+                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_test_results mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Failed'  and trigger_type in ($TriggerType) and test_id in ($TestId)\ngroup by failure_reason",
                         "refId": "B",
                         "select": [
                             [
@@ -715,37 +1086,26 @@
                 "type": "piechart"
             },
             {
-                "collapsed": false,
-                "datasource": "TimescaleDB",
-                "gridPos": {
-                    "h": 1,
-                    "w": 24,
-                    "x": 0,
-                    "y": 32
-                },
-                "id": 120,
-                "panels": [],
-                "title": "SIP Signalling Trend",
-                "type": "row"
-            },
-            {
                 "aliasColors": {
                     "Failed": "red"
                 },
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
                     "h": 11,
-                    "w": 24,
+                    "w": 12,
                     "x": 0,
-                    "y": 33
+                    "y": 39
                 },
                 "hiddenSeries": false,
-                "id": 10,
+                "id": 33,
                 "legend": {
                     "alignAsTable": false,
                     "avg": false,
@@ -764,7 +1124,7 @@
                     "alertThreshold": true
                 },
                 "percentage": false,
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "pointradius": 3,
                 "points": true,
                 "renderer": "flot",
@@ -776,11 +1136,15 @@
                 "steppedLine": false,
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \ntest_time as \"time\", \nCASE WHEN test_result = 'Success' THEN 1 end as \"Success\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_time)\norder by test_time",
+                        "rawSql": "SELECT \ntest_timestamp as \"time\", \nCASE WHEN test_result = 'Success' THEN 1 end as \"Success\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and trigger_type in ($TriggerType) and test_id in ($TestId)\norder by test_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -802,12 +1166,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \ntest_time as \"time\", \nfailure_reason,\nCASE WHEN test_result = 'Failed' THEN 0 end as \"Value\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Failed'\norder by test_time",
+                        "rawSql": "SELECT \ntest_timestamp as \"time\", \nfailure_reason,\nCASE WHEN test_result = 'Failed' THEN 0 end as \"Value\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'SIP Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Failed' and trigger_type in ($TriggerType) and test_id in ($TestId)\norder by test_timestamp",
                         "refId": "B",
                         "select": [
                             [
@@ -830,7 +1198,6 @@
                     }
                 ],
                 "thresholds": [],
-                "timeFrom": null,
                 "timeRegions": [
                     {
                         "$$hashKey": "object:116",
@@ -842,7 +1209,6 @@
                         "op": "time"
                     }
                 ],
-                "timeShift": null,
                 "title": "SIP Signalling Trend - $HostName",
                 "tooltip": {
                     "shared": true,
@@ -851,9 +1217,7 @@
                 },
                 "type": "graph",
                 "xaxis": {
-                    "buckets": null,
                     "mode": "time",
-                    "name": null,
                     "show": true,
                     "values": []
                 },
@@ -861,43 +1225,51 @@
                     {
                         "$$hashKey": "object:260",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     },
                     {
                         "$$hashKey": "object:261",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     }
                 ],
                 "yaxis": {
-                    "align": false,
-                    "alignLevel": null
+                    "align": false
                 }
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 44
+                    "y": 50
                 },
-                "id": 44,
+                "id": 52,
                 "panels": [],
-                "title": "Media Cascade - Distribution",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
+                "title": "Media Signalling Distribution",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -947,15 +1319,16 @@
                 },
                 "gridPos": {
                     "h": 12,
-                    "w": 24,
+                    "w": 12,
                     "x": 0,
-                    "y": 45
+                    "y": 51
                 },
-                "id": 4,
+                "id": 41,
                 "options": {
                     "legend": {
                         "displayMode": "table",
                         "placement": "bottom",
+                        "showLegend": true,
                         "values": [
                             "value",
                             "percent"
@@ -970,18 +1343,24 @@
                         "values": true
                     },
                     "tooltip": {
-                        "mode": "single"
+                        "mode": "single",
+                        "sort": "none"
                     }
                 },
                 "repeat": "HostName",
                 "repeatDirection": "h",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
+                        "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Success'",
+                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Success' and trigger_type in ($TriggerType) and test_id in ($TestId)",
                         "refId": "A",
                         "select": [
                             [
@@ -1003,333 +1382,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_tool mhmt \nwhere failure_reason is NOT NULL and test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Failed'\ngroup by failure_reason",
-                        "refId": "B",
-                        "select": [
-                            [
-                                {
-                                    "params": [
-                                        "peak_cpu"
-                                    ],
-                                    "type": "column"
-                                }
-                            ]
-                        ],
-                        "table": "cluster_utlization",
-                        "timeColumn": "\"timestamp\"",
-                        "timeColumnType": "timestamp",
-                        "where": [
-                            {
-                                "name": "$__timeFilter",
-                                "params": [],
-                                "type": "macro"
-                            }
-                        ]
-                    }
-                ],
-                "title": "Media Cascade Distribution - $HostName",
-                "type": "piechart"
-            },
-            {
-                "collapsed": false,
-                "datasource": "TimescaleDB",
-                "gridPos": {
-                    "h": 1,
-                    "w": 24,
-                    "x": 0,
-                    "y": 57
-                },
-                "id": 152,
-                "panels": [],
-                "title": "Media Cascade Trend",
-                "type": "row"
-            },
-            {
-                "aliasColors": {
-                    "Failed": "red"
-                },
-                "bars": false,
-                "dashLength": 10,
-                "dashes": false,
-                "datasource": "TimescaleDB",
-                "fill": 1,
-                "fillGradient": 0,
-                "gridPos": {
-                    "h": 11,
-                    "w": 24,
-                    "x": 0,
-                    "y": 58
-                },
-                "hiddenSeries": false,
-                "id": 12,
-                "legend": {
-                    "alignAsTable": false,
-                    "avg": false,
-                    "current": false,
-                    "max": false,
-                    "min": false,
-                    "rightSide": false,
-                    "show": true,
-                    "total": false,
-                    "values": false
-                },
-                "lines": false,
-                "linewidth": 1,
-                "nullPointMode": "null",
-                "options": {
-                    "alertThreshold": true
-                },
-                "percentage": false,
-                "pluginVersion": "8.1.8",
-                "pointradius": 3,
-                "points": true,
-                "renderer": "flot",
-                "repeat": "HostName",
-                "repeatDirection": "h",
-                "seriesOverrides": [],
-                "spaceLength": 10,
-                "stack": false,
-                "steppedLine": false,
-                "targets": [
-                    {
-                        "format": "time_series",
-                        "group": [],
-                        "metricColumn": "none",
-                        "rawQuery": true,
-                        "rawSql": "SELECT \ntest_time as \"time\", \nCASE WHEN test_result = 'Success' THEN 1 end as \"Success\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_time)\norder by test_time",
-                        "refId": "A",
-                        "select": [
-                            [
-                                {
-                                    "params": [
-                                        "value"
-                                    ],
-                                    "type": "column"
-                                }
-                            ]
-                        ],
-                        "timeColumn": "time",
-                        "where": [
-                            {
-                                "name": "$__timeFilter",
-                                "params": [],
-                                "type": "macro"
-                            }
-                        ]
-                    },
-                    {
-                        "format": "time_series",
-                        "group": [],
-                        "hide": false,
-                        "metricColumn": "none",
-                        "rawQuery": true,
-                        "rawSql": "SELECT \ntest_time as \"time\", \nfailure_reason,\nCASE WHEN test_result = 'Failed' THEN 0 end as \"Value\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_time) and test_result='Failed'\norder by test_time",
-                        "refId": "B",
-                        "select": [
-                            [
-                                {
-                                    "params": [
-                                        "value"
-                                    ],
-                                    "type": "column"
-                                }
-                            ]
-                        ],
-                        "timeColumn": "time",
-                        "where": [
-                            {
-                                "name": "$__timeFilter",
-                                "params": [],
-                                "type": "macro"
-                            }
-                        ]
-                    }
-                ],
-                "thresholds": [],
-                "timeFrom": null,
-                "timeRegions": [
-                    {
-                        "$$hashKey": "object:116",
-                        "colorMode": "background6",
-                        "fill": true,
-                        "fillColor": "rgba(234, 112, 112, 0.12)",
-                        "line": false,
-                        "lineColor": "rgba(237, 46, 24, 0.60)",
-                        "op": "time"
-                    }
-                ],
-                "timeShift": null,
-                "title": "Media Cascade Trend - $HostName",
-                "tooltip": {
-                    "shared": true,
-                    "sort": 0,
-                    "value_type": "individual"
-                },
-                "type": "graph",
-                "xaxis": {
-                    "buckets": null,
-                    "mode": "time",
-                    "name": null,
-                    "show": true,
-                    "values": []
-                },
-                "yaxes": [
-                    {
-                        "$$hashKey": "object:260",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    },
-                    {
-                        "$$hashKey": "object:261",
-                        "format": "short",
-                        "label": null,
-                        "logBase": 1,
-                        "max": null,
-                        "min": null,
-                        "show": true
-                    }
-                ],
-                "yaxis": {
-                    "align": false,
-                    "alignLevel": null
-                }
-            },
-            {
-                "collapsed": false,
-                "datasource": "TimescaleDB",
-                "gridPos": {
-                    "h": 1,
-                    "w": 24,
-                    "x": 0,
-                    "y": 69
-                },
-                "id": 30,
-                "panels": [],
-                "title": "Media Signalling - Distribution",
-                "type": "row"
-            },
-            {
-                "datasource": "TimescaleDB",
-                "fieldConfig": {
-                    "defaults": {
-                        "color": {
-                            "mode": "palette-classic"
-                        },
-                        "custom": {
-                            "hideFrom": {
-                                "legend": false,
-                                "tooltip": false,
-                                "viz": false
-                            }
-                        },
-                        "mappings": []
-                    },
-                    "overrides": [
-                        {
-                            "matcher": {
-                                "id": "byName",
-                                "options": "Success"
-                            },
-                            "properties": [
-                                {
-                                    "id": "color",
-                                    "value": {
-                                        "fixedColor": "green",
-                                        "mode": "fixed"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "matcher": {
-                                "id": "byName",
-                                "options": "Failed"
-                            },
-                            "properties": [
-                                {
-                                    "id": "color",
-                                    "value": {
-                                        "fixedColor": "red",
-                                        "mode": "fixed"
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "gridPos": {
-                    "h": 12,
-                    "w": 24,
-                    "x": 0,
-                    "y": 70
-                },
-                "id": 2,
-                "options": {
-                    "legend": {
-                        "displayMode": "table",
-                        "placement": "bottom",
-                        "values": [
-                            "value",
-                            "percent"
-                        ]
-                    },
-                    "pieType": "donut",
-                    "reduceOptions": {
-                        "calcs": [
-                            "lastNotNull"
-                        ],
-                        "fields": "",
-                        "values": true
-                    },
-                    "tooltip": {
-                        "mode": "single"
-                    }
-                },
-                "repeat": "HostName",
-                "repeatDirection": "h",
-                "targets": [
-                    {
-                        "format": "table",
-                        "group": [],
-                        "metricColumn": "none",
-                        "rawQuery": true,
-                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Success'",
-                        "refId": "A",
-                        "select": [
-                            [
-                                {
-                                    "params": [
-                                        "value"
-                                    ],
-                                    "type": "column"
-                                }
-                            ]
-                        ],
-                        "timeColumn": "time",
-                        "where": [
-                            {
-                                "name": "$__timeFilter",
-                                "params": [],
-                                "type": "macro"
-                            }
-                        ]
-                    },
-                    {
-                        "format": "table",
-                        "group": [],
-                        "hide": false,
-                        "metricColumn": "none",
-                        "rawQuery": true,
-                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_tool mhmt \nwhere failure_reason is NOT NULL and test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Failed'\ngroup by failure_reason",
+                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Failed'  and trigger_type in ($TriggerType) and test_id in ($TestId)\ngroup by failure_reason",
                         "refId": "B",
                         "select": [
                             [
@@ -1354,21 +1416,8 @@
                     }
                 ],
                 "title": "Media Signalling Distribution - $HostName",
+                "transformations": [],
                 "type": "piechart"
-            },
-            {
-                "collapsed": false,
-                "datasource": "TimescaleDB",
-                "gridPos": {
-                    "h": 1,
-                    "w": 24,
-                    "x": 0,
-                    "y": 82
-                },
-                "id": 184,
-                "panels": [],
-                "title": "Media Signalling Trend",
-                "type": "row"
             },
             {
                 "aliasColors": {
@@ -1377,17 +1426,20 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
                     "h": 11,
-                    "w": 24,
+                    "w": 12,
                     "x": 0,
-                    "y": 83
+                    "y": 63
                 },
                 "hiddenSeries": false,
-                "id": 8,
+                "id": 63,
                 "legend": {
                     "alignAsTable": false,
                     "avg": false,
@@ -1406,7 +1458,7 @@
                     "alertThreshold": true
                 },
                 "percentage": false,
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "pointradius": 3,
                 "points": true,
                 "renderer": "flot",
@@ -1418,11 +1470,15 @@
                 "steppedLine": false,
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \ntest_time as \"time\", \nCASE WHEN test_result = 'Success' THEN 1 end as \"Success\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_time)\norder by test_time",
+                        "rawSql": "SELECT \ntest_timestamp as \"time\", \nCASE WHEN test_result = 'Success' THEN 1 end as \"Success\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and trigger_type in ($TriggerType) and test_id in ($TestId)\norder by test_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -1444,12 +1500,16 @@
                         ]
                     },
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "hide": false,
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "SELECT \ntest_time as \"time\", \nfailure_reason,\nCASE WHEN test_result = 'Failed' THEN 0 end as \"Value\"\nfrom media_health_monitoring_tool mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_time) and test_result = 'Failed'\norder by test_time",
+                        "rawSql": "SELECT \ntest_timestamp as \"time\", \nfailure_reason,\nCASE WHEN test_result = 'Failed' THEN 0 end as \"Value\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Signalling' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Failed' and trigger_type in ($TriggerType) and test_id in ($TestId)\norder by test_timestamp",
                         "refId": "B",
                         "select": [
                             [
@@ -1472,7 +1532,6 @@
                     }
                 ],
                 "thresholds": [],
-                "timeFrom": null,
                 "timeRegions": [
                     {
                         "$$hashKey": "object:116",
@@ -1484,7 +1543,6 @@
                         "op": "time"
                     }
                 ],
-                "timeShift": null,
                 "title": "Media Signalling Trend - $HostName",
                 "tooltip": {
                     "shared": true,
@@ -1493,9 +1551,7 @@
                 },
                 "type": "graph",
                 "xaxis": {
-                    "buckets": null,
                     "mode": "time",
-                    "name": null,
                     "show": true,
                     "values": []
                 },
@@ -1503,89 +1559,292 @@
                     {
                         "$$hashKey": "object:260",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     },
                     {
                         "$$hashKey": "object:261",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     }
                 ],
                 "yaxis": {
-                    "align": false,
-                    "alignLevel": null
+                    "align": false
                 }
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
                     "x": 0,
-                    "y": 94
+                    "y": 74
                 },
-                "id": 72,
+                "id": 69,
                 "panels": [],
-                "title": "Media Health Monitoring Tool Details",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
+                "title": "Media Cascade Distribution",
                 "type": "row"
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
-                            "mode": "thresholds"
+                            "mode": "palette-classic"
                         },
                         "custom": {
-                            "align": "auto",
-                            "displayMode": "auto",
-                            "filterable": true
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
                         },
-                        "mappings": [],
-                        "thresholds": {
-                            "mode": "absolute",
-                            "steps": [
+                        "mappings": []
+                    },
+                    "overrides": [
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Success"
+                            },
+                            "properties": [
                                 {
-                                    "color": "green",
-                                    "value": null
-                                },
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "green",
+                                        "mode": "fixed"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "matcher": {
+                                "id": "byName",
+                                "options": "Failed"
+                            },
+                            "properties": [
                                 {
-                                    "color": "red",
-                                    "value": 80
+                                    "id": "color",
+                                    "value": {
+                                        "fixedColor": "red",
+                                        "mode": "fixed"
+                                    }
                                 }
                             ]
                         }
-                    },
-                    "overrides": []
+                    ]
                 },
                 "gridPos": {
-                    "h": 11,
-                    "w": 24,
+                    "h": 12,
+                    "w": 12,
                     "x": 0,
-                    "y": 95
+                    "y": 75
                 },
-                "id": 14,
+                "id": 79,
                 "options": {
-                    "showHeader": true
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "bottom",
+                        "showLegend": true,
+                        "values": [
+                            "value",
+                            "percent"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single",
+                        "sort": "none"
+                    }
                 },
-                "pluginVersion": "8.1.8",
+                "repeat": "HostName",
+                "repeatDirection": "h",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \nCOUNT(*) as \"Success\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Success' and trigger_type in ($TriggerType) and test_id in ($TestId)",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "table",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select count(failure_reason), failure_reason as \"Value\" from media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Failed'  and trigger_type in ($TriggerType) and test_id in ($TestId)\ngroup by failure_reason",
+                        "refId": "B",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Media Cascade Distribution - $HostName",
+                "transformations": [],
+                "type": "piechart"
+            },
+            {
+                "aliasColors": {
+                    "Failed": "red"
+                },
+                "bars": false,
+                "dashLength": 10,
+                "dashes": false,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
+                "fill": 1,
+                "fillGradient": 0,
+                "gridPos": {
+                    "h": 11,
+                    "w": 12,
+                    "x": 0,
+                    "y": 87
+                },
+                "hiddenSeries": false,
+                "id": 84,
+                "legend": {
+                    "alignAsTable": false,
+                    "avg": false,
+                    "current": false,
+                    "max": false,
+                    "min": false,
+                    "rightSide": false,
+                    "show": true,
+                    "total": false,
+                    "values": false
+                },
+                "lines": false,
+                "linewidth": 1,
+                "nullPointMode": "null",
+                "options": {
+                    "alertThreshold": true
+                },
+                "percentage": false,
+                "pluginVersion": "9.4.3",
+                "pointradius": 3,
+                "points": true,
+                "renderer": "flot",
+                "repeat": "HostName",
+                "repeatDirection": "h",
+                "seriesOverrides": [],
+                "spaceLength": 10,
+                "stack": false,
+                "steppedLine": false,
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select timestamp as \"Timestamp\", organization_id as \"Organization ID\", cluster_id as \"Cluster ID\", cluster_name as \"Cluster Name\", node_id as \"Node ID\", host_name as \"Host Name\", test_time as \"Test Time\", test_name as \"Test Name\", test_result as \"Test Result\", failure_reason as \"Failure Reason\" from media_health_monitoring_tool where $__timeFilter(test_time) and host_name in ($HostName)",
+                        "rawSql": "SELECT \ntest_timestamp as \"time\", \nCASE WHEN test_result = 'Success' THEN 1 end as \"Success\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_timestamp) and trigger_type in ($TriggerType) and test_id in ($TestId)\norder by test_timestamp",
                         "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "timeColumn": "time",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    },
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "time_series",
+                        "group": [],
+                        "hide": false,
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "SELECT \ntest_timestamp as \"time\", \nfailure_reason,\nCASE WHEN test_result = 'Failed' THEN 0 end as \"Value\"\nfrom media_health_monitoring_test_results mhmt \nwhere test_name = 'Media Cascade' and host_name in ($HostName) and $__timeFilter(test_timestamp) and test_result = 'Failed' and trigger_type in ($TriggerType) and test_id in ($TestId)\norder by test_timestamp",
+                        "refId": "B",
                         "select": [
                             [
                                 {
@@ -1606,99 +1865,321 @@
                         ]
                     }
                 ],
-                "title": "Media Health Monitoring Tool Details",
+                "thresholds": [],
+                "timeRegions": [
+                    {
+                        "$$hashKey": "object:116",
+                        "colorMode": "background6",
+                        "fill": true,
+                        "fillColor": "rgba(234, 112, 112, 0.12)",
+                        "line": false,
+                        "lineColor": "rgba(237, 46, 24, 0.60)",
+                        "op": "time"
+                    }
+                ],
+                "title": "Media Cascade Trend - $HostName",
+                "tooltip": {
+                    "shared": true,
+                    "sort": 0,
+                    "value_type": "individual"
+                },
+                "type": "graph",
+                "xaxis": {
+                    "mode": "time",
+                    "show": true,
+                    "values": []
+                },
+                "yaxes": [
+                    {
+                        "$$hashKey": "object:260",
+                        "format": "short",
+                        "logBase": 1,
+                        "show": true
+                    },
+                    {
+                        "$$hashKey": "object:261",
+                        "format": "short",
+                        "logBase": 1,
+                        "show": true
+                    }
+                ],
+                "yaxis": {
+                    "align": false
+                }
+            },
+            {
+                "collapsed": false,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 98
+                },
+                "id": 75,
+                "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
+                "title": "Monitoring Tool Results",
+                "type": "row"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "cellOptions": {
+                                "mode": "gradient",
+                                "type": "color-background"
+                            },
+                            "filterable": true,
+                            "inspect": false
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "0": {
+                                        "color": "red",
+                                        "index": 0,
+                                        "text": "Failed"
+                                    },
+                                    "1": {
+                                        "color": "green",
+                                        "index": 1,
+                                        "text": "Success"
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "transparent"
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 10,
+                    "w": 24,
+                    "x": 0,
+                    "y": 99
+                },
+                "id": 12,
+                "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
+                    "showHeader": true
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "format": "table",
+                        "group": [],
+                        "metricColumn": "none",
+                        "rawQuery": true,
+                        "rawSql": "select mhm.test_timestamp as \"Timestamp\",\nmhm.test_id as \"Test ID\",\norg.organization_name as \"Organization Name\", \nmhm.cluster_name as \"Cluster Name\", \nmhm.host_name as \"Host Name\",\nmhm.trigger_type as \"Trigger Type\",\nmhm.test_name as \"Test\",\ncase when(mhm.test_result = 'Success') then 1 else 0 end as \"Result\",\nmhm.failure_reason as \"Failure Reason\"\nfrom media_health_monitoring_test_results mhm\njoin organizations org on mhm.organization_id = org.organization_id\nwhere org.organization_name in ('$OrganizationName') and\nmhm.host_name in ($HostName) and\nmhm.cluster_name in ($ClusterName) and\n$__timeFilter(mhm.timestamp) and\nmhm.test_id in ($TestId) and\nmhm.trigger_type in ($TriggerType)\norder by mhm.test_timestamp, mhm.test_name ",
+                        "refId": "A",
+                        "select": [
+                            [
+                                {
+                                    "params": [
+                                        "peak_cpu"
+                                    ],
+                                    "type": "column"
+                                }
+                            ]
+                        ],
+                        "table": "cluster_utlization",
+                        "timeColumn": "\"timestamp\"",
+                        "timeColumnType": "timestamp",
+                        "where": [
+                            {
+                                "name": "$__timeFilter",
+                                "params": [],
+                                "type": "macro"
+                            }
+                        ]
+                    }
+                ],
+                "title": "Monitoring Test Results",
                 "type": "table"
             }
         ],
         "refresh": "",
-        "schemaVersion": 30,
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
-                        "text": "All",
-                        "value": "$__all"
+                        "text": "Canopus Homer Test 123 ",
+                        "value": "Canopus Homer Test 123 "
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct organization_name from organizations",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct organization_name from organizations o",
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
                     "multi": false,
                     "name": "OrganizationName",
                     "options": [],
-                    "query": "select distinct organization_name from organizations",
+                    "query": "select distinct organization_name from organizations o",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
-                    "sort": 1,
+                    "sort": 0,
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct cluster_name from media_health_monitoring_tool mhmt join organizations o \non o.organization_id = mhmt.organization_id \nwhere organization_name in ('$OrganizationName')",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Cluster Name",
                     "multi": false,
                     "name": "ClusterName",
                     "options": [],
-                    "query": "select distinct cluster_name from media_health_monitoring_tool mhmt join organizations o \non o.organization_id = mhmt.organization_id \nwhere organization_name in ('$OrganizationName')",
+                    "query": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
-                    "sort": 1,
+                    "sort": 0,
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct host_name from media_health_monitoring_tool mhmt join organizations o \non o.organization_id = mhmt.organization_id \nwhere cluster_name in ($ClusterName)",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct host_name \nfrom node_details nd join organizations o on o.organization_id = nd.organization_id  \njoin cluster_details cd on cd.cluster_id = nd.cluster_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName)",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Host Name",
                     "multi": false,
                     "name": "HostName",
                     "options": [],
-                    "query": "select distinct host_name from media_health_monitoring_tool mhmt join organizations o \non o.organization_id = mhmt.organization_id \nwhere cluster_name in ($ClusterName)",
+                    "query": "select distinct host_name \nfrom node_details nd join organizations o on o.organization_id = nd.organization_id  \njoin cluster_details cd on cd.cluster_id = nd.cluster_id \nwhere o.organization_name in ('$OrganizationName') and cd.cluster_name in ($ClusterName)",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
-                    "sort": 1,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "current": {
+                        "selected": true,
+                        "text": [
+                            "All"
+                        ],
+                        "value": [
+                            "$__all"
+                        ]
+                    },
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct trigger_type from media_health_monitoring_test_results",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Trigger Type",
+                    "multi": true,
+                    "name": "TriggerType",
+                    "options": [],
+                    "query": "select distinct trigger_type from media_health_monitoring_test_results",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "current": {
+                        "selected": false,
+                        "text": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzo0MTRhNzA0ZC1jMDM5LTRkZTEtYjYxNS01YTY3MDJjYzkyYWY",
+                        "value": "Y2lzY29zcGFyazovL3VzL0hZQlJJRF9DT01NQU5EX0lELzg2OTNmNWQ2LWU4MWEtNDczYS1hNzY5LWZiYmU0NzgwOTNiNzo0MTRhNzA0ZC1jMDM5LTRkZTEtYjYxNS01YTY3MDJjYzkyYWY"
+                    },
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct mhmtr.test_id from media_health_monitoring_test_results mhmtr join organizations o on o.organization_id = mhmtr.organization_id\nand o.organization_name in ('$OrganizationName') and mhmtr.cluster_name in ($ClusterName) and mhmtr.host_name in ($HostName)",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Test ID",
+                    "multi": false,
+                    "name": "TestId",
+                    "options": [],
+                    "query": "select distinct mhmtr.test_id from media_health_monitoring_test_results mhmtr join organizations o on o.organization_id = mhmtr.organization_id\nand o.organization_name in ('$OrganizationName') and mhmtr.cluster_name in ($ClusterName) and mhmtr.host_name in ($HostName)",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
                     "type": "query"
                 }
             ]
         },
         "time": {
-            "from": "now-7d",
+            "from": "now-6h",
             "to": "now"
         },
         "timepicker": {},
         "timezone": "utc",
-        "title": "7. Media Health Monitor",
-        "uid": "yNYJ9oy7z",
-        "version": 2
+        "title": "8. Media Health Monitoring Test Results",
+        "uid": "uU-drNF4z",
+        "version": 4,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

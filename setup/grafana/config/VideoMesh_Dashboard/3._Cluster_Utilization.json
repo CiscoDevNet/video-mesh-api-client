@@ -4,7 +4,10 @@
             "list": [
                 {
                     "builtIn": 1,
-                    "datasource": "-- Grafana --",
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "grafana"
+                    },
                     "enable": true,
                     "hide": true,
                     "iconColor": "rgba(0, 211, 255, 1)",
@@ -20,14 +23,17 @@
             ]
         },
         "editable": true,
-        "gnetId": null,
+        "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
         "id": null,
-        "iteration": 1673424564705,
         "links": [],
+        "liveNow": false,
         "panels": [
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 3,
                     "w": 24,
@@ -36,12 +42,21 @@
                 },
                 "id": 100,
                 "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
                     "content": "<center><h1> ${OrganizationName} </center></h1>",
                     "mode": "html"
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
@@ -73,7 +88,10 @@
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -82,6 +100,15 @@
                 },
                 "id": 46,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Peak CPU",
                 "type": "row"
             },
@@ -90,7 +117,10 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -117,22 +147,26 @@
                     "alertThreshold": true
                 },
                 "percentage": false,
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "pointradius": 2,
                 "points": false,
                 "renderer": "flot",
-                "repeat": null,
                 "seriesOverrides": [],
                 "spaceLength": 10,
                 "stack": false,
                 "steppedLine": false,
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cu.measure_time as \"time\", cu.peak_cpu as \"Value\", cu.cluster_name from cluster_utlization cu join organizations o on o.organization_id = cu.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)\ngroup by cu.cluster_name, cu.measure_time, cu.peak_cpu\norder by cu.measure_time",
+                        "rawSql": "select cu.measure_timestamp as \"time\", cu.peak_cpu as \"Value\", cu.cluster_name from cluster_utilization cu join organizations o on o.organization_id = cu.organization_id\nwhere $__timeFilter(cu.measure_timestamp) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)\ngroup by cu.cluster_name, cu.measure_timestamp, cu.peak_cpu\norder by cu.measure_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -144,6 +178,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -157,9 +208,7 @@
                     }
                 ],
                 "thresholds": [],
-                "timeFrom": null,
                 "timeRegions": [],
-                "timeShift": null,
                 "title": "Peak CPU - $ClusterName",
                 "tooltip": {
                     "shared": true,
@@ -168,9 +217,7 @@
                 },
                 "type": "graph",
                 "xaxis": {
-                    "buckets": null,
                     "mode": "time",
-                    "name": null,
                     "show": true,
                     "values": []
                 },
@@ -178,30 +225,26 @@
                     {
                         "$$hashKey": "object:71",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     },
                     {
                         "$$hashKey": "object:72",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     }
                 ],
                 "yaxis": {
-                    "align": false,
-                    "alignLevel": null
+                    "align": false
                 }
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -210,6 +253,15 @@
                 },
                 "id": 57,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Average CPU",
                 "type": "row"
             },
@@ -218,7 +270,10 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -245,22 +300,26 @@
                     "alertThreshold": true
                 },
                 "percentage": false,
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "pointradius": 2,
                 "points": false,
                 "renderer": "flot",
-                "repeat": null,
                 "seriesOverrides": [],
                 "spaceLength": 10,
                 "stack": false,
                 "steppedLine": false,
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cu.measure_time as \"time\", cu.avg_cpu as \"Value\", cu.cluster_name from cluster_utlization cu join organizations o on o.organization_id = cu.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)\ngroup by cu.cluster_name, cu.measure_time, cu.avg_cpu\norder by cu.measure_time",
+                        "rawSql": "select cu.measure_timestamp as \"time\", cu.avg_cpu as \"Value\", cu.cluster_name from cluster_utilization cu join organizations o on o.organization_id = cu.organization_id\nwhere $__timeFilter(cu.measure_timestamp) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)\ngroup by cu.cluster_name, cu.measure_timestamp, cu.avg_cpu\norder by cu.measure_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -272,6 +331,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -285,9 +361,7 @@
                     }
                 ],
                 "thresholds": [],
-                "timeFrom": null,
                 "timeRegions": [],
-                "timeShift": null,
                 "title": "Average CPU - $ClusterName",
                 "tooltip": {
                     "shared": true,
@@ -296,9 +370,7 @@
                 },
                 "type": "graph",
                 "xaxis": {
-                    "buckets": null,
                     "mode": "time",
-                    "name": null,
                     "show": true,
                     "values": []
                 },
@@ -306,30 +378,26 @@
                     {
                         "$$hashKey": "object:71",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     },
                     {
                         "$$hashKey": "object:72",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     }
                 ],
                 "yaxis": {
-                    "align": false,
-                    "alignLevel": null
+                    "align": false
                 }
             },
             {
                 "collapsed": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "gridPos": {
                     "h": 1,
                     "w": 24,
@@ -338,6 +406,15 @@
                 },
                 "id": 68,
                 "panels": [],
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "refId": "A"
+                    }
+                ],
                 "title": "Active Calls",
                 "type": "row"
             },
@@ -346,7 +423,10 @@
                 "bars": false,
                 "dashLength": 10,
                 "dashes": false,
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fill": 1,
                 "fillGradient": 0,
                 "gridPos": {
@@ -373,7 +453,7 @@
                     "alertThreshold": true
                 },
                 "percentage": false,
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "pointradius": 2,
                 "points": false,
                 "renderer": "flot",
@@ -383,11 +463,16 @@
                 "steppedLine": false,
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "time_series",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cu.measure_time as \"time\", cu.active_calls as \"Value\", cu.cluster_name from cluster_utlization cu join organizations o on o.organization_id = cu.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)\ngroup by cu.cluster_name, cu.measure_time, cu.active_calls\norder by cu.measure_time",
+                        "rawSql": "select cu.measure_timestamp as \"time\", cu.active_calls as \"Value\", cu.cluster_name from cluster_utilization cu join organizations o on o.organization_id = cu.organization_id\nwhere $__timeFilter(cu.measure_timestamp) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)\ngroup by cu.cluster_name, cu.measure_timestamp, cu.active_calls\norder by cu.measure_timestamp",
                         "refId": "A",
                         "select": [
                             [
@@ -399,6 +484,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -412,9 +514,7 @@
                     }
                 ],
                 "thresholds": [],
-                "timeFrom": null,
                 "timeRegions": [],
-                "timeShift": null,
                 "title": "Active Calls - $ClusterName",
                 "tooltip": {
                     "shared": true,
@@ -423,9 +523,7 @@
                 },
                 "type": "graph",
                 "xaxis": {
-                    "buckets": null,
                     "mode": "time",
-                    "name": null,
                     "show": true,
                     "values": []
                 },
@@ -433,29 +531,25 @@
                     {
                         "$$hashKey": "object:71",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     },
                     {
                         "$$hashKey": "object:72",
                         "format": "short",
-                        "label": null,
                         "logBase": 1,
-                        "max": null,
-                        "min": null,
                         "show": true
                     }
                 ],
                 "yaxis": {
-                    "align": false,
-                    "alignLevel": null
+                    "align": false
                 }
             },
             {
-                "datasource": "TimescaleDB",
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "s16CiW-Vk"
+                },
                 "fieldConfig": {
                     "defaults": {
                         "color": {
@@ -463,15 +557,17 @@
                         },
                         "custom": {
                             "align": "auto",
-                            "displayMode": "auto"
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "inspect": false
                         },
                         "mappings": [],
                         "thresholds": {
                             "mode": "absolute",
                             "steps": [
                                 {
-                                    "color": "green",
-                                    "value": null
+                                    "color": "green"
                                 },
                                 {
                                     "color": "red",
@@ -490,16 +586,29 @@
                 },
                 "id": 2,
                 "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
                     "showHeader": true
                 },
-                "pluginVersion": "8.1.8",
+                "pluginVersion": "9.4.3",
                 "targets": [
                     {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "s16CiW-Vk"
+                        },
+                        "editorMode": "code",
                         "format": "table",
                         "group": [],
                         "metricColumn": "none",
                         "rawQuery": true,
-                        "rawSql": "select cu.timestamp as \"Timestamp\", cu.organization_id as \"Organization ID\", cu.measure_time as \"Response Timestamp\", cu.cluster_name as \"Cluster Name\", cu.peak_cpu as \"Peak CPU\", cu.avg_cpu as \"Average CPU\", cu.active_calls as \"Active Calls\" from cluster_utlization cu join organizations o on cu.organization_id = o.organization_id\nwhere $__timeFilter(cu.measure_time) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)",
+                        "rawSql": "select cu.timestamp as \"Timestamp\", cu.organization_id as \"Organization ID\", cu.measure_timestamp as \"Response Timestamp\", cu.cluster_name as \"Cluster Name\", cu.peak_cpu as \"Peak CPU\", cu.avg_cpu as \"Average CPU\", cu.active_calls as \"Active Calls\" from cluster_utilization cu join organizations o on cu.organization_id = o.organization_id\nwhere $__timeFilter(cu.measure_timestamp) and\no.organization_name in ('$OrganizationName') and\ncu.cluster_name in ($ClusterName)",
                         "refId": "A",
                         "select": [
                             [
@@ -511,6 +620,23 @@
                                 }
                             ]
                         ],
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        },
                         "table": "cluster_utlization",
                         "timeColumn": "\"timestamp\"",
                         "timeColumnType": "timestamp",
@@ -528,22 +654,23 @@
             }
         ],
         "refresh": "",
-        "schemaVersion": 30,
+        "revision": 1,
+        "schemaVersion": 38,
         "style": "dark",
         "tags": [],
         "templating": {
             "list": [
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
                     "definition": "select distinct organization_name from organizations",
-                    "description": null,
-                    "error": null,
                     "hide": 0,
                     "includeAll": false,
                     "label": "Select Organization Name",
@@ -558,23 +685,23 @@
                     "type": "query"
                 },
                 {
-                    "allValue": null,
                     "current": {
                         "selected": false,
                         "text": "All",
                         "value": "$__all"
                     },
-                    "datasource": "TimescaleDB",
-                    "definition": "select distinct cluster_name from cluster_utlization cu join organizations o on o.organization_id = cu.organization_id  where organization_name in ('$OrganizationName')",
-                    "description": null,
-                    "error": null,
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "s16CiW-Vk"
+                    },
+                    "definition": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "hide": 0,
                     "includeAll": true,
                     "label": "Select Cluster Name",
                     "multi": false,
                     "name": "ClusterName",
                     "options": [],
-                    "query": "select distinct cluster_name from cluster_utlization cu join organizations o on o.organization_id = cu.organization_id  where organization_name in ('$OrganizationName')",
+                    "query": "select distinct cluster_name \nfrom cluster_details cd join organizations o on o.organization_id = cd.organization_id  \nwhere o.organization_name in ('$OrganizationName')",
                     "refresh": 1,
                     "regex": "",
                     "skipUrlSync": false,
@@ -591,7 +718,8 @@
         "timezone": "utc",
         "title": "3. Cluster Utilization",
         "uid": "01idVCQ7z",
-        "version": 2
+        "version": 6,
+        "weekStart": ""
     },
     "folderId": 1,
     "folderUid": "KXS09oy7k"

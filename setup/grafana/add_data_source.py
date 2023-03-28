@@ -1,27 +1,31 @@
-import os
 import requests
-from dotenv import load_dotenv
+from utils import load_config
 
-load_dotenv()
-
-GRAFANA_URL = os.getenv('GRAFANA_URL') + '/api/datasources'
-GRAFANA_API_KEY = os.getenv('GRAFANA_API_KEY')
-
-DATABASE_HOST_TIMESCALE = os.getenv('DATABASE_HOST')
-DATABASE_PORT_TIMESCALE = os.getenv('DATABASE_PORT')
-DATABASE_USER_TIMESCALE = os.getenv('DATABASE_USER')
-DATABASE_PASSWORD_TIMESCALE = os.getenv('DATABASE_PASSWORD')
-DATABASE_NAME_TIMESCALE = os.getenv('DATABASE_NAME')
+config = load_config("config.yaml")
+api_config = config["api"]
+grafana_config = config["grafana"]
+grafana_host_url = grafana_config["host"]
+grafana_api_key = grafana_config["key"]
+database_connection_url = api_config["database"]["url"]
+database_connection_url_components = database_connection_url.split("/")
+database_user_password_host_port = database_connection_url_components[2]
+database_user_password, database_host_port = database_user_password_host_port.split("@")
+database_user, database_password = database_user_password.split(":")
+database_host, database_port = database_host_port.split(":")
+database_name = database_connection_url_components[3]
+grafana_datasource_url = f"{grafana_host_url}/api/datasources"
 
 payload = {
+    "id": 1,
+    "uid": "uid_timescaledb",
     "name": "TimescaleDB",
     "type": "postgres",
     "isDefault": True,
-    "url": f"{DATABASE_HOST_TIMESCALE}:{DATABASE_PORT_TIMESCALE}",
-    "database": DATABASE_NAME_TIMESCALE,
+    "url": f"{database_host}:{database_port}",
+    "database": database_name,
     "access": "proxy",
     "jsonData": {
-        "postgresVersion": 1200,
+        "postgresVersion": 1500,
         "sslmode": "disable",
         "timescaledb": True,
         "tlsAuth": False,
@@ -29,16 +33,16 @@ payload = {
         "tlsConfigurationMethod": "file-path",
         "tlsSkipVerify": True
     },
-    "user": DATABASE_USER_TIMESCALE,
+    "user": database_user,
     "secureJsonData": {
-        "password": DATABASE_PASSWORD_TIMESCALE
+        "password": database_password
     },
     "basicAuth": False
 }
 
 response = requests.post(
-    GRAFANA_URL,
-    headers={'Authorization': 'Bearer ' + GRAFANA_API_KEY},
+    grafana_datasource_url,
+    headers={'Authorization': 'Bearer ' + grafana_api_key},
     json=payload
 )
 
@@ -46,4 +50,4 @@ if response.status_code != 200:
     print('Failed to add TimescaleDB datasource')
     print(response.text)
 else:
-    print('Added TimescaleDB datasource')
+    print('Successfully Added TimescaleDB datasource')
