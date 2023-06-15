@@ -664,7 +664,6 @@ class APITriggers:
 
         :param from_timestamp: Union[str, datetime.datetime]
         :param to_timestamp: Union[str, datetime.datetime]
-        :param deviceType: str
         :return:
         """
         current_time = datetime.datetime.utcnow()

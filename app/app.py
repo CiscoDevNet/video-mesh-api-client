@@ -11,9 +11,6 @@ import utils
 from api import APITriggers
 from auth import Authentication
 
-from db import APIDatabase
-import parser
-
 app = Flask(__name__)
 
 
