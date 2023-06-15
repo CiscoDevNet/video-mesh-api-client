@@ -716,3 +716,104 @@ class Parser:
 
         network_test_results_records = Parser.trim_whitespaces(network_test_results_records)
         return network_test_results_records
+    
+    @staticmethod
+    def client_type_distribution_results(
+            response: dict,
+            current_time: Union[str, datetime.datetime],
+            organization_id: str,
+            from_timestamp: Union[str, datetime.datetime],
+            to_timestamp: Union[str, datetime.datetime],
+    ) -> list[dict]:
+        """
+        Parse Client type distribution results from API response
+
+        :param response:Client type distribution results API response
+        :param current_time: Current time
+        :param organization_id: Organization ID
+        :param from_timestamp: From timestamp
+        :param to_timestamp: To timestamp
+        :return: A list of client type distribution results records
+        """
+        client_type_distribution_test_results_records = list()
+        aggregation_interval = response["aggregationInterval"]
+        for client_type_distribution_test_result in response["items"]:
+            try:
+                distribution_timestamp = client_type_distribution_test_result["timestamp"]
+                for cluster in client_type_distribution_test_result["clusters"]:
+                    cluster_id = cluster["clusterId"]
+                    cluster_name = cluster["clusterName"]
+                    for distr in cluster["clientTypeDistributionDetails"]:
+                        
+                        device_type = distr["deviceType"]
+                        device_description = distr["description"]
+                        device_count = distr["count"]
+
+                        client_type_distribution_test_results_records.append(
+                            {
+                                "timestamp": current_time,
+                                "organization_id": organization_id,
+                                "aggregation_interval": aggregation_interval,
+                                "distribution_timestamp": distribution_timestamp,
+                                "from_timestamp": from_timestamp,
+                                "to_timestamp": to_timestamp,
+                                "cluster_id": cluster_id,
+                                "cluster_name": cluster_name,
+                                "device_type": device_type,
+                                "device_count": device_count,
+                                "device_description": device_description
+                            }
+                        )
+
+            except Exception as e:
+                logging.error(
+                    f"Error parsing client_type_distribution results: {e}: {client_type_distribution_test_result}:\n{response}"
+                )
+
+        client_type_distribution_test_results_records = Parser.trim_whitespaces(client_type_distribution_test_results_records)
+        return client_type_distribution_test_results_records
+
+    @staticmethod
+    def webhook_event_parse(
+            current_time: Union[str, datetime.datetime],
+            response: dict
+    ) -> list[dict]:
+        
+        webhook_event = list()
+        alert_name = response["alertName"]
+        org_id = response["orgId"]
+        threshold = response["configuredThreshold"]
+        threshold_name = response["thresholdName"]
+        alert_id = response["alertId"]
+        alert_type = response["alertType"]
+        total_calls = response["totalCalls"]
+        event_timestamp = response["timestamp"]
+        abs_percent = response["absolutePercentageOverThreshold"]
+        
+        if alert_name == "clusterCallsRedirected":
+            cluster_id = response["clusterId"]
+            metric_count = response["redirectedCalls"]
+        elif alert_name == "orgCallsOverflowed":
+            cluster_id = None
+            metric_count = response["overflowedCalls"]
+        
+        
+        webhook_event.append(
+        {
+            "timestamp": current_time,
+            "organization_id": org_id,
+            "cluster_id": cluster_id,
+            "alert_id": alert_id,
+            "alert_name": alert_name,
+            "alert_type": alert_type,
+            "total_calls": total_calls,
+            "metric_count": metric_count,
+            "threshold_name": threshold_name,
+            "threshold": threshold,
+            "absolute_percentage_over_threshold": abs_percent,
+            "event_timestamp": event_timestamp
+            }
+        )
+        
+        return Parser.trim_whitespaces(webhook_event)
+            

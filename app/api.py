@@ -99,6 +99,11 @@ class APITriggers:
                 "url": f"{self.developer_hub_host_url}/videoMesh/testResults/networkTest",
                 "method": "GET",
                 "headers": self.default_request_header,
+            },
+            "client_type_distribution" : {
+                "url": f"{self.developer_hub_host_url}/videoMesh/clientTypeDistribution",
+                "method": "GET",
+                "headers": self.default_request_header,
             }
         }
 
@@ -194,6 +199,7 @@ class APITriggers:
             logging.info(f"Fetching data for time range {time_range_start_time} to {time_range_end_time}")
             self.trigger_all_api_endpoints(time_range_start_time, time_range_end_time, fetch_organizations)
             end_time = end_time - datetime.timedelta(days=6)
+            break
 
         logging.info("Finished fetching historical data")
 
@@ -648,6 +654,55 @@ class APITriggers:
                     to_timestamp=to_timestamp
                 )
                 self.db.insert_records(network_test_result_records, "network_test_results")
+            except Exception as e:
+                logging.error(f"Error in reachability test results: {e}")
+                return
+    
+    def list_client_type_distribution_api(self, from_timestamp: Union[str, datetime.datetime],
+                                      to_timestamp: Union[str, datetime.datetime]):
+        """
+        List Client Type distribution API
+
+        :param from_timestamp: Union[str, datetime.datetime]
+        :param to_timestamp: Union[str, datetime.datetime]
+        :param deviceType: str
+        :return:
+        """
+        current_time = datetime.datetime.utcnow()
+
+        if from_timestamp > to_timestamp:
+            logging.error("From timestamp cannot be greater than to timestamp")
+            return
+
+        if isinstance(from_timestamp, datetime.datetime):
+            from_timestamp = datetime.datetime.strftime(
+                from_timestamp,
+                constants.WEBEX_API_DATETIME_FORMAT_SECOND_PRECISION
+            )
+        if isinstance(to_timestamp, datetime.datetime):
+            to_timestamp = datetime.datetime.strftime(
+                to_timestamp,
+                constants.WEBEX_API_DATETIME_FORMAT_SECOND_PRECISION
+            )
+
+        for organization_id in self.organizations:
+            params = {
+                "orgId": organization_id,
+                "from": from_timestamp,
+                "to": to_timestamp
+            }
+            response = self.make_api_call("client_type_distribution", params=params)
+            if response is None:
+                return
+            try:
+                client_type_distribution_result_records = self.parser.client_type_distribution_results(
+                    response,
+                    current_time=current_time,
+                    organization_id=organization_id,
+                    from_timestamp=from_timestamp,
+                    to_timestamp=to_timestamp
+                )
+                self.db.insert_records(client_type_distribution_result_records, "client_type_distribution")
             except Exception as e:
                 logging.error(f"Error in reachability test results: {e}")
                 return

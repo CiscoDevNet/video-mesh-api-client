@@ -99,6 +99,18 @@ class APIDatabase:
             self.metadata,
             autoload_with=self.engine
         )
+        
+        self.client_type_distribution_table = Table(
+            "client_type_distribution",
+            self.metadata,
+            autoload_with=self.engine
+        )
+        
+        self.webhook_events_table = Table(
+            "webhook_events",
+            self.metadata,
+            autoload_with=self.engine
+        )
 
         self.tables = {
             "organizations": {
@@ -199,6 +211,24 @@ class APIDatabase:
                     "test_type",
                     "service_type"
                 ],
+            },
+            "client_type_distribution": {
+                "table": self.client_type_distribution_table,
+                "index_elements": [
+                    "organization_id",
+                    "cluster_id",
+                    "distribution_timestamp",
+                    "device_type"
+                ],
+            },
+            "webhook_events": {
+                "table": self.webhook_events_table,
+                "index_elements":[
+                    "organization_id",
+                    "alert_name",
+                    "event_timestamp",
+                    "alert_id"
+                ]
             }
         }
 

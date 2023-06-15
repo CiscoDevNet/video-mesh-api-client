@@ -11,6 +11,9 @@ import utils
 from api import APITriggers
 from auth import Authentication
 
+from db import APIDatabase
+import parser
+
 app = Flask(__name__)
 
 
@@ -48,8 +51,8 @@ def execute_api_triggers():
     to_time = current_time
     logging.info(f"Fetching latest data from {from_time} to {to_time}")
     api.trigger_all_api_endpoints(from_time, to_time)
-    logging.info(f"Finished fetching latest data from {from_time} to {to_time}")
-
+    logging.info(f"Finished fetching latest data from {from_time} to {to_time}")    
+    
 
 def execute_auth_renewal_trigger():
     """
@@ -75,6 +78,28 @@ def index() -> tuple[str, int]:
     return "Hello, World", 200
 
 
+@app.route("/webhooks", methods=['POST'])
+def webhooks_listener() :
+    """
+    Webhooks Listener route
+    
+    :return: None
+    """
+    
+    webhook_parser = parser.Parser()
+    current_time = datetime.datetime.utcnow()
+    req_json = request.json["data"]["map"]
+    db = APIDatabase(
+            connection_url=APP_CONFIG["api"]["database"]["url"],
+            create_tables_on_init=True
+        )
+    webhook_record = webhook_parser.webhook_event_parse(current_time, req_json)
+    db.insert_records(webhook_record, "webhook_events")
+    
+    return "OK"
+    
+
+    
 @app.route("/oauth")
 def oauth() -> tuple[str, int]:
     """
@@ -119,6 +144,7 @@ if __name__ == "__main__":
     auth = Authentication(APP_CONFIG["api"])
     scheduler = BackgroundScheduler()
     scheduler.add_job(execute_api_triggers, "interval", minutes=APP_CONFIG["app"]["update_interval_minutes"])
+    
     scheduler.add_job(execute_auth_renewal_trigger, "interval", hours=APP_CONFIG["app"]["auth_interval_hours"])
     scheduler.start()
     app.run(

@@ -1,0 +1,526 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": {
+                        "type": "grafana",
+                        "uid": "-- Grafana --"
+                    },
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [],
+        "liveNow": false,
+        "panels": [
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "gridPos": {
+                    "h": 3,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 2,
+                "options": {
+                    "code": {
+                        "language": "plaintext",
+                        "showLineNumbers": false,
+                        "showMiniMap": false
+                    },
+                    "content": "<center><h1> ${OrganizationName} </center></h1>",
+                    "mode": "html"
+                },
+                "pluginVersion": "9.4.3",
+                "title": "Organization",
+                "type": "text"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            }
+                        },
+                        "mappings": [
+                            {
+                                "options": {
+                                    "Webex App Desktop": {
+                                        "color": "dark-purple",
+                                        "index": 0
+                                    },
+                                    "Webex App Mobile": {
+                                        "color": "red",
+                                        "index": 1
+                                    },
+                                    "Webex App VDI": {
+                                        "color": "yellow",
+                                        "index": 3
+                                    },
+                                    "Webex Devices": {
+                                        "color": "blue",
+                                        "index": 2
+                                    }
+                                },
+                                "type": "value"
+                            }
+                        ],
+                        "unit": "short"
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 10,
+                    "w": 7,
+                    "x": 0,
+                    "y": 3
+                },
+                "id": 8,
+                "options": {
+                    "legend": {
+                        "displayMode": "table",
+                        "placement": "right",
+                        "showLegend": true,
+                        "values": [
+                            "percent",
+                            "value"
+                        ]
+                    },
+                    "pieType": "donut",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": true
+                    },
+                    "tooltip": {
+                        "mode": "single",
+                        "sort": "none"
+                    }
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT SUM(device_count), device_description \nFROM client_type_distribution \nWHERE organization_id = '$OrganizationID' AND $__timeFilter(distribution_timestamp) AND cluster_name IN ($ClusterName) AND device_type in ($DeviceType)\nGROUP BY device_description",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "name": "SUM",
+                                    "parameters": [
+                                        {
+                                            "name": "device_count",
+                                            "type": "functionParameter"
+                                        }
+                                    ],
+                                    "type": "function"
+                                },
+                                {
+                                    "parameters": [
+                                        {
+                                            "name": "device_description",
+                                            "type": "functionParameter"
+                                        }
+                                    ],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "name": "device_description",
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50,
+                            "whereJsonTree": {
+                                "children1": [
+                                    {
+                                        "id": "b98a9b9b-0123-4456-b89a-b18868ffadb2",
+                                        "properties": {
+                                            "field": "organization_id",
+                                            "operator": "equal",
+                                            "value": [
+                                                "$OrganizationID"
+                                            ],
+                                            "valueSrc": [
+                                                "value"
+                                            ],
+                                            "valueType": [
+                                                "text"
+                                            ]
+                                        },
+                                        "type": "rule"
+                                    }
+                                ],
+                                "id": "abbb8b9b-89ab-4cde-b012-31886759a1d5",
+                                "type": "group"
+                            },
+                            "whereString": "organization_id = '$OrganizationID'"
+                        },
+                        "table": "client_type_distribution"
+                    }
+                ],
+                "title": "Distribution of Client Type",
+                "type": "piechart"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "barAlignment": 0,
+                            "drawStyle": "line",
+                            "fillOpacity": 0,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            },
+                            "lineInterpolation": "linear",
+                            "lineWidth": 1,
+                            "pointSize": 5,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "showPoints": "auto",
+                            "spanNulls": false,
+                            "stacking": {
+                                "group": "A",
+                                "mode": "none"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        },
+                        "unit": "short"
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 10,
+                    "w": 17,
+                    "x": 7,
+                    "y": 3
+                },
+                "id": 6,
+                "interval": "1m",
+                "options": {
+                    "legend": {
+                        "calcs": [
+                            "sum"
+                        ],
+                        "displayMode": "table",
+                        "placement": "right",
+                        "showLegend": true
+                    },
+                    "tooltip": {
+                        "mode": "single",
+                        "sort": "none"
+                    }
+                },
+                "pluginVersion": "9.4.3",
+                "repeat": "OrganizationName",
+                "repeatDirection": "h",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "time_series",
+                        "rawQuery": true,
+                        "rawSql": "SELECT distribution_timestamp AS \"time\", device_count AS \"Value\", device_description\nFROM client_type_distribution WHERE ($__timeFilter(distribution_timestamp) AND organization_id = '$OrganizationID' \nAND cluster_name IN ($ClusterName) AND device_type IN ($DeviceType)) \nORDER BY distribution_timestamp ",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "alias": "\"time\"",
+                                    "parameters": [
+                                        {
+                                            "name": "distribution_timestamp",
+                                            "type": "functionParameter"
+                                        }
+                                    ],
+                                    "type": "function"
+                                },
+                                {
+                                    "alias": "\"Value\"",
+                                    "parameters": [
+                                        {
+                                            "name": "device_count",
+                                            "type": "functionParameter"
+                                        }
+                                    ],
+                                    "type": "function"
+                                },
+                                {
+                                    "parameters": [
+                                        {
+                                            "name": "device_description",
+                                            "type": "functionParameter"
+                                        }
+                                    ],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "name": "distribution_timestamp",
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                },
+                                {
+                                    "property": {
+                                        "name": "device_count",
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                },
+                                {
+                                    "property": {
+                                        "name": "device_description",
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "orderBy": {
+                                "property": {
+                                    "name": [
+                                        "distribution_timestamp"
+                                    ],
+                                    "type": "string"
+                                },
+                                "type": "property"
+                            },
+                            "whereJsonTree": {
+                                "children1": [
+                                    {
+                                        "id": "abb9bb9b-89ab-4cde-b012-318868dad796",
+                                        "properties": {
+                                            "field": "cluster_name",
+                                            "operator": "select_any_in",
+                                            "value": [
+                                                "$ClusterName"
+                                            ],
+                                            "valueSrc": [
+                                                "value"
+                                            ],
+                                            "valueType": [
+                                                "text"
+                                            ]
+                                        },
+                                        "type": "rule"
+                                    },
+                                    {
+                                        "id": "bba998b8-4567-489a-bcde-f18868db1102",
+                                        "properties": {
+                                            "field": "device_type",
+                                            "operator": "select_any_in",
+                                            "value": [
+                                                "$DeviceType"
+                                            ],
+                                            "valueSrc": [
+                                                "value"
+                                            ],
+                                            "valueType": [
+                                                "text"
+                                            ]
+                                        },
+                                        "type": "rule"
+                                    }
+                                ],
+                                "id": "abbb8b9b-89ab-4cde-b012-31886759a1d5",
+                                "type": "group"
+                            },
+                            "whereString": "(cluster_name IN ('$ClusterName') AND device_type IN ('$DeviceType'))"
+                        },
+                        "table": "client_type_distribution"
+                    }
+                ],
+                "title": "Total Call Joins by Client Type",
+                "type": "timeseries"
+            }
+        ],
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "current": {
+                        "selected": false,
+                        "text": "Cisco Systems, Inc.",
+                        "value": "Cisco Systems, Inc."
+                    },
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select distinct organization_name from organizations",
+                    "hide": 0,
+                    "includeAll": false,
+                    "label": "Select Organization Name",
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select distinct organization_name from organizations",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "current": {},
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select distinct cluster_name from cluster_details where organization_id = '$OrganizationID'",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Cluster Name",
+                    "multi": false,
+                    "name": "ClusterName",
+                    "options": [],
+                    "query": "select distinct cluster_name from cluster_details where organization_id = '$OrganizationID'",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "current": {
+                        "selected": true,
+                        "text": [],
+                        "value": []
+                    },
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select distinct deviceType from client_type_distribution where organization_id = '$OrganizationID'",
+                    "hide": 0,
+                    "includeAll": true,
+                    "label": "Select Device Type",
+                    "multi": true,
+                    "name": "DeviceType",
+                    "options": [],
+                    "query": "select distinct deviceType from client_type_distribution where organization_id = '$OrganizationID'",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 1,
+                    "type": "query"
+                },
+                {
+                    "current": {
+                        "selected": false,
+                        "text": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi8xZWI2NWZkZi05NjQzLTQxN2YtOTk3NC1hZDcyY2FlMGUxMGY",
+                        "value": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi8xZWI2NWZkZi05NjQzLTQxN2YtOTk3NC1hZDcyY2FlMGUxMGY"
+                    },
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select o.organization_id from organizations o  where o.organization_name in ('$OrganizationName')",
+                    "hide": 2,
+                    "includeAll": false,
+                    "multi": false,
+                    "name": "OrganizationID",
+                    "options": [],
+                    "query": "select o.organization_id from organizations o  where o.organization_name in ('$OrganizationName')",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-7d",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "10. Client Type Distribution Details",
+        "uid": "DRiE-fQ4k",
+        "version": 37,
+        "weekStart": ""
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}
