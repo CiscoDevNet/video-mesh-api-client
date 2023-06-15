@@ -703,5 +703,5 @@ class APITriggers:
                 )
                 self.db.insert_records(client_type_distribution_result_records, "client_type_distribution")
             except Exception as e:
-                logging.error(f"Error in reachability test results: {e}")
+                logging.error(f"Error in client type distribution details: {e}")
                 return
