@@ -716,3 +716,60 @@ class Parser:
 
         network_test_results_records = Parser.trim_whitespaces(network_test_results_records)
         return network_test_results_records
+    
+    @staticmethod
+    def client_type_distribution_results(
+            response: dict,
+            current_time: Union[str, datetime.datetime],
+            organization_id: str,
+            from_timestamp: Union[str, datetime.datetime],
+            to_timestamp: Union[str, datetime.datetime],
+    ) -> list[dict]:
+        """
+        Parse Client type distribution results from API response
+
+        :param response:Client type distribution results API response
+        :param current_time: Current time
+        :param organization_id: Organization ID
+        :param from_timestamp: From timestamp
+        :param to_timestamp: To timestamp
+        :return: A list of client type distribution results records
+        """
+        client_type_distribution_test_results_records = list()
+        aggregation_interval = response["aggregationInterval"]
+        for client_type_distribution_test_result in response["items"]:
+            try:
+                distribution_timestamp = client_type_distribution_test_result["timestamp"]
+                for cluster in client_type_distribution_test_result["clusters"]:
+                    cluster_id = cluster["clusterId"]
+                    cluster_name = cluster["clusterName"]
+                    for distr in cluster["clientTypeDistributionDetails"]:
+                        
+                        device_type = distr["deviceType"]
+                        device_description = distr["description"]
+                        device_count = distr["count"]
+
+                        client_type_distribution_test_results_records.append(
+                            {
+                                "timestamp": current_time,
+                                "organization_id": organization_id,
+                                "aggregation_interval": aggregation_interval,
+                                "distribution_timestamp": distribution_timestamp,
+                                "from_timestamp": from_timestamp,
+                                "to_timestamp": to_timestamp,
+                                "cluster_id": cluster_id,
+                                "cluster_name": cluster_name,
+                                "device_type": device_type,
+                                "device_count": device_count,
+                                "device_description": device_description
+                            }
+                        )
+
+            except Exception as e:
+                logging.error(
+                    f"Error parsing client_type_distribution results: {e}: {client_type_distribution_test_result}:\n{response}"
+                )
+
+        client_type_distribution_test_results_records = Parser.trim_whitespaces(client_type_distribution_test_results_records)
+        return client_type_distribution_test_results_records
+            

@@ -48,8 +48,8 @@ def execute_api_triggers():
     to_time = current_time
     logging.info(f"Fetching latest data from {from_time} to {to_time}")
     api.trigger_all_api_endpoints(from_time, to_time)
-    logging.info(f"Finished fetching latest data from {from_time} to {to_time}")
-
+    logging.info(f"Finished fetching latest data from {from_time} to {to_time}")    
+    
 
 def execute_auth_renewal_trigger():
     """
@@ -119,6 +119,7 @@ if __name__ == "__main__":
     auth = Authentication(APP_CONFIG["api"])
     scheduler = BackgroundScheduler()
     scheduler.add_job(execute_api_triggers, "interval", minutes=APP_CONFIG["app"]["update_interval_minutes"])
+    
     scheduler.add_job(execute_auth_renewal_trigger, "interval", hours=APP_CONFIG["app"]["auth_interval_hours"])
     scheduler.start()
     app.run(

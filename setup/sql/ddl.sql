@@ -174,6 +174,22 @@ CREATE TABLE IF NOT EXISTS CITY_COORDINATES(
     PRIMARY KEY (continent, city)
 );
 
+CREATE TABLE IF NOT EXISTS CLIENT_TYPE_DISTRIBUTION(
+    timestamp TIMESTAMP NOT NULL,
+    organization_id VARCHAR NOT NULL,
+    aggregation_interval VARCHAR NOT NULL,
+    from_timestamp TIMESTAMP NOT NULL,
+    to_timestamp TIMESTAMP NOT NULL,
+    distribution_timestamp TIMESTAMP NOT NULL,
+    cluster_id VARCHAR NOT NULL,
+    cluster_name VARCHAR NOT NULL,
+    device_type VARCHAR NOT NULL,
+    device_count INTEGER NOT NULL,
+    device_description VARCHAR NOT NULL,
+    PRIMARY KEY (organization_id, cluster_id, distribution_timestamp, device_type)
+);
+
+
 SELECT create_hypertable('CLUSTER_AVAILABILITY', 'start_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
 SELECT add_retention_policy('CLUSTER_AVAILABILITY', INTERVAL '30 days', if_not_exists => TRUE);
@@ -205,5 +221,9 @@ SELECT add_retention_policy('MEDIA_HEALTH_MONITORING_TEST_RESULTS', INTERVAL '30
 SELECT create_hypertable('NETWORK_TEST_RESULTS', 'test_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
 SELECT add_retention_policy('NETWORK_TEST_RESULTS', INTERVAL '30 days', if_not_exists => TRUE);
+
+SELECT create_hypertable('CLIENT_TYPE_DISTRIBUTION', 'distribution_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('CLIENT_TYPE_DISTRIBUTION', INTERVAL '30 days', if_not_exists => TRUE);
 
 COMMIT;
