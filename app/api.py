@@ -199,6 +199,7 @@ class APITriggers:
             logging.info(f"Fetching data for time range {time_range_start_time} to {time_range_end_time}")
             self.trigger_all_api_endpoints(time_range_start_time, time_range_end_time, fetch_organizations)
             end_time = end_time - datetime.timedelta(days=6)
+            break
 
         logging.info("Finished fetching historical data")
 
@@ -664,6 +665,7 @@ class APITriggers:
 
         :param from_timestamp: Union[str, datetime.datetime]
         :param to_timestamp: Union[str, datetime.datetime]
+        :param deviceType: str
         :return:
         """
         current_time = datetime.datetime.utcnow()
@@ -702,5 +704,5 @@ class APITriggers:
                 )
                 self.db.insert_records(client_type_distribution_result_records, "client_type_distribution")
             except Exception as e:
-                logging.error(f"Error in client type distribution details: {e}")
+                logging.error(f"Error in reachability test results: {e}")
                 return

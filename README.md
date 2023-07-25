@@ -64,17 +64,23 @@ Health Monitoring, Network and Reachability Test Results.
       for more details on this). If you want to change these default values for retention policy and chunk interval,
       please make the changes mentioned in [retention policy](#retention-policy) section before performing any further
       steps.
-7. Navigate to `docker/` and run `docker-compose --project-name video-mesh-api-client up -d` to build and start the
+7. If you want to be able to receive Video Mesh Webhook Events, create a [Webhook Subscription] (https://developer.webex.com/docs/api/v1/webhooks/create-a-webhook) with following parameters : 
+    - name : <Any name for the subscription>
+    - targetUrl : <host name mentioned in redirect URL in config.yml>/webhooks ; for example : http://10.1.1.1/webhooks , NOTE: IP/host address must be accesible from the internet
+    - resource : videoMeshAlerts
+    - event : triggered
+    - ownedBy : org
+8. Navigate to `docker/` and run `docker-compose --project-name video-mesh-api-client build` and `docker-compose --project-name video-mesh-api-client up -d` to build and start the
    application.
-8. Visit the OAuth Authorization URL obtained while creating the Integration on the Integration app page and authorize
+9. Visit the OAuth Authorization URL obtained while creating the Integration on the Integration app page and authorize
    the application. You will be redirected to the `localhost:2808/oauth` (or your OAuth URL) for authentication. Once
    verified, it shows that you have been granted access to the application.
     - **Note**: *Once you restart the application container, the authentication flow needs to be completed again*.
-9. Visit `http://localhost:3000` (or the port number you deployed the Grafana container on) to see the Grafana
+10. Visit `http://localhost:3000` (or the port number you deployed the Grafana container on) to see the Grafana
    application. Log in using `admin` as the username and password.
-10. Click the `Settings` icon on the left sidebar, then click `API Keys`. Click `New API Key` and create a new key with
+11. Click the `Settings` icon on the left sidebar, then click `API Keys`. Click `New API Key` and create a new key with
     the `Admin` role. Copy and make note of this key.
-11. Open a new shell in the Grafana container using `docker exec -it grafana bash`
+12. Open a new shell in the Grafana container using `docker exec -it grafana bash`
     - Use `vi config.yaml` to edit the configuration file and now add the copied key to the `key` field under `grafana`.
       Save and exit.
         ```yaml
@@ -86,8 +92,8 @@ Health Monitoring, Network and Reachability Test Results.
     - Run `./setup/grafana/load.sh` to import all the dashboards and data sources. If no errors occur, it means
       that Grafana has been successfully set up.
     - Exit the container using `exit`
-12. Restart the Grafana container using `docker restart grafana`
-13. Once restarted, all the visualizations will be available.
+13. Restart the Grafana container using `docker restart grafana`
+14. Once restarted, all the visualizations will be available.
 
 ## Retention Policy
 
