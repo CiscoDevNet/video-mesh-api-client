@@ -199,7 +199,6 @@ class APITriggers:
             logging.info(f"Fetching data for time range {time_range_start_time} to {time_range_end_time}")
             self.trigger_all_api_endpoints(time_range_start_time, time_range_end_time, fetch_organizations)
             end_time = end_time - datetime.timedelta(days=6)
-            break
 
         logging.info("Finished fetching historical data")
 
