@@ -11,6 +11,9 @@ import utils
 from api import APITriggers
 from auth import Authentication
 
+from db import APIDatabase
+import parser
+
 app = Flask(__name__)
 
 
@@ -75,6 +78,28 @@ def index() -> tuple[str, int]:
     return "Hello, World", 200
 
 
+@app.route("/webhooks", methods=['POST'])
+def webhooks_listener() :
+    """
+    Webhooks Listener route
+    
+    :return: None
+    """
+    
+    webhook_parser = parser.Parser()
+    current_time = datetime.datetime.utcnow()
+    req_json = request.json["data"]
+    db = APIDatabase(
+            connection_url=APP_CONFIG["api"]["database"]["url"],
+            create_tables_on_init=True
+        )
+    webhook_record = webhook_parser.webhook_event_parse(current_time, req_json)
+    db.insert_records(webhook_record, "webhook_events")
+    
+    return "OK"
+    
+
+    
 @app.route("/oauth")
 def oauth() -> tuple[str, int]:
     """

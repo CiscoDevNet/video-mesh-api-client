@@ -1,0 +1,444 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": {
+                        "type": "grafana",
+                        "uid": "-- Grafana --"
+                    },
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [
+            {
+                "asDropdown": false,
+                "icon": "dashboard",
+                "includeVars": false,
+                "keepTime": true,
+                "tags": [],
+                "targetBlank": true,
+                "title": "Organization Calls Overflowed",
+                "tooltip": "",
+                "type": "link",
+                "url": "http://localhost:3000/d/f73GQEwVk/10-1-cluster-call-redirects?orgId=1&from=1677606284301&to=1685382284301"
+            },
+            {
+                "asDropdown": false,
+                "icon": "dashboard",
+                "includeVars": false,
+                "keepTime": true,
+                "tags": [],
+                "targetBlank": true,
+                "title": "Cluster Calls Redirected",
+                "tooltip": "",
+                "type": "link",
+                "url": "http://localhost:3000/d/L9iHzsQVz/10-2-organization-calls-overflowed?orgId=1&from=1685360728080&to=1685382328081"
+            }
+        ],
+        "liveNow": false,
+        "panels": [
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "dark-red",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 8,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 10,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) from webhook_events where $__timeFilter(webhook_events.event_timestamp) and organization_id in ('$OrganizationID')",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "Total Webhook Events Received",
+                "type": "stat"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "dark-red",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 8,
+                    "x": 8,
+                    "y": 0
+                },
+                "id": 8,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) from webhook_events where $__timeFilter(webhook_events.event_timestamp) and webhook_events.alert_name in ('orgCallsOverflowed') and organization_id in ('$OrganizationID')",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "Call Overflow Events Received",
+                "type": "stat"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "dark-red",
+                                    "value": null
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 7,
+                    "w": 8,
+                    "x": 16,
+                    "y": 0
+                },
+                "id": 6,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) from webhook_events where $__timeFilter(webhook_events.event_timestamp) and webhook_events.alert_name in ('clusterCallsRedirected')  and organization_id in ('$OrganizationID')",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "Cluster Call Redirected Events Received",
+                "type": "stat"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "custom": {
+                            "align": "auto",
+                            "cellOptions": {
+                                "type": "auto"
+                            },
+                            "inspect": false
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 24,
+                    "x": 0,
+                    "y": 7
+                },
+                "id": 2,
+                "options": {
+                    "footer": {
+                        "countRows": false,
+                        "fields": "",
+                        "reducer": [
+                            "sum"
+                        ],
+                        "show": false
+                    },
+                    "showHeader": true,
+                    "sortBy": [
+                        {
+                            "desc": true,
+                            "displayName": "Timestamp"
+                        }
+                    ]
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT event_timestamp as \"Timestamp\", alert_id as \"Event ID\", organization_id as \"Organization ID\", cluster_id as \"Cluster ID\", alert_name as \"Event Name\", total_calls as \"Total Calls\", metric_count as \"Number of Calls\", absolute_percentage_over_threshold as \"Threshold Exceeded (%)\" FROM webhook_events where $__timeFilter(event_timestamp)",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "Historical Webhook Events",
+                "type": "table"
+            }
+        ],
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "current": {},
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select organization_name from organizations",
+                    "hide": 0,
+                    "includeAll": false,
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select organization_name from organizations",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                },
+                {
+                    "current": {},
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select organization_id from organizations where organization_name in ('$OrganizationName')",
+                    "hide": 0,
+                    "includeAll": false,
+                    "multi": false,
+                    "name": "OrganizationID",
+                    "options": [],
+                    "query": "select organization_id from organizations where organization_name in ('$OrganizationName')",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-6h",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "11. Webhooks Dashboard",
+        "uid": "iem_ZVyVk",
+        "version": 1,
+        "weekStart": ""
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}

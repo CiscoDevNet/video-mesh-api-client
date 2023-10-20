@@ -189,6 +189,22 @@ CREATE TABLE IF NOT EXISTS CLIENT_TYPE_DISTRIBUTION(
     PRIMARY KEY (organization_id, cluster_id, distribution_timestamp, device_type)
 );
 
+CREATE TABLE IF NOT EXISTS WEBHOOK_EVENTS(
+    timestamp TIMESTAMP NOT NULL,
+    organization_id VARCHAR NOT NULL,
+    cluster_id VARCHAR,
+    alert_id VARCHAR NOT NULL,
+    alert_name VARCHAR NOT NULL,
+    alert_type VARCHAR NOT NULL,
+    total_calls INTEGER NOT NULL,
+    metric_count INTEGER NOT NULL,
+    threshold_name VARCHAR NOT NULL,
+    threshold INTEGER NOT NULL,
+    absolute_percentage_over_threshold FLOAT NOT NULL,
+    event_timestamp TIMESTAMP NOT NULL,
+    PRIMARY KEY (organization_id, alert_name, event_timestamp, alert_id)
+);
+
 
 SELECT create_hypertable('CLUSTER_AVAILABILITY', 'start_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
@@ -225,5 +241,9 @@ SELECT add_retention_policy('NETWORK_TEST_RESULTS', INTERVAL '30 days', if_not_e
 SELECT create_hypertable('CLIENT_TYPE_DISTRIBUTION', 'distribution_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
 
 SELECT add_retention_policy('CLIENT_TYPE_DISTRIBUTION', INTERVAL '30 days', if_not_exists => TRUE);
+
+SELECT create_hypertable('WEBHOOK_EVENTS', 'event_timestamp', chunk_time_interval => INTERVAL '24 hours', if_not_exists => TRUE);
+
+SELECT add_retention_policy('WEBHOOK_EVENTS', INTERVAL '30 days', if_not_exists => TRUE);
 
 COMMIT;

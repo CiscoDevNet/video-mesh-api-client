@@ -1,0 +1,372 @@
+{
+    "dashboard": {
+        "annotations": {
+            "list": [
+                {
+                    "builtIn": 1,
+                    "datasource": {
+                        "type": "datasource",
+                        "uid": "-- Grafana --"
+                    },
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "target": {
+                        "limit": 100,
+                        "matchAny": false,
+                        "tags": [],
+                        "type": "dashboard"
+                    },
+                    "type": "dashboard"
+                }
+            ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": null,
+        "links": [],
+        "liveNow": false,
+        "panels": [
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 6,
+                    "w": 24,
+                    "x": 0,
+                    "y": 0
+                },
+                "id": 2,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) from webhook_events where $__timeFilter(webhook_events.event_timestamp) and alert_name in ('orgCallsOverflowed')",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "Total Events Received",
+                "type": "stat"
+            },
+            {
+                "collapsed": false,
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "gridPos": {
+                    "h": 1,
+                    "w": 24,
+                    "x": 0,
+                    "y": 6
+                },
+                "id": 4,
+                "panels": [],
+                "title": "Events Received Per Organization",
+                "type": "row"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "thresholds"
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 8,
+                    "w": 12,
+                    "x": 0,
+                    "y": 7
+                },
+                "id": 6,
+                "maxPerRow": 3,
+                "options": {
+                    "colorMode": "value",
+                    "graphMode": "area",
+                    "justifyMode": "auto",
+                    "orientation": "auto",
+                    "reduceOptions": {
+                        "calcs": [
+                            "lastNotNull"
+                        ],
+                        "fields": "",
+                        "values": false
+                    },
+                    "textMode": "auto"
+                },
+                "pluginVersion": "9.4.3",
+                "repeat": "OrganizationName",
+                "repeatDirection": "h",
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select count(*) from webhook_events w join organizations c on w.organization_id = c.organization_id where $__timeFilter(w.event_timestamp) and w.alert_name in ('orgCallsOverflowed') and c.organization_name in ($OrganizationName)",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "$OrganizationName",
+                "type": "stat"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "uid_timescaledb"
+                },
+                "fieldConfig": {
+                    "defaults": {
+                        "color": {
+                            "mode": "palette-classic"
+                        },
+                        "custom": {
+                            "axisCenteredZero": false,
+                            "axisColorMode": "text",
+                            "axisLabel": "",
+                            "axisPlacement": "auto",
+                            "fillOpacity": 80,
+                            "gradientMode": "none",
+                            "hideFrom": {
+                                "legend": false,
+                                "tooltip": false,
+                                "viz": false
+                            },
+                            "lineWidth": 1,
+                            "scaleDistribution": {
+                                "type": "linear"
+                            },
+                            "thresholdsStyle": {
+                                "mode": "off"
+                            }
+                        },
+                        "mappings": [],
+                        "thresholds": {
+                            "mode": "absolute",
+                            "steps": [
+                                {
+                                    "color": "green",
+                                    "value": null
+                                },
+                                {
+                                    "color": "red",
+                                    "value": 80
+                                }
+                            ]
+                        }
+                    },
+                    "overrides": []
+                },
+                "gridPos": {
+                    "h": 10,
+                    "w": 24,
+                    "x": 0,
+                    "y": 15
+                },
+                "id": 11,
+                "options": {
+                    "barRadius": 0,
+                    "barWidth": 0.97,
+                    "colorByField": "Organization Name",
+                    "fullHighlight": false,
+                    "groupWidth": 0.7,
+                    "legend": {
+                        "calcs": [],
+                        "displayMode": "list",
+                        "placement": "bottom",
+                        "showLegend": true
+                    },
+                    "orientation": "auto",
+                    "showValue": "auto",
+                    "stacking": "none",
+                    "tooltip": {
+                        "mode": "multi",
+                        "sort": "none"
+                    },
+                    "xField": "timestamp",
+                    "xTickLabelRotation": 0,
+                    "xTickLabelSpacing": 0
+                },
+                "targets": [
+                    {
+                        "datasource": {
+                            "type": "postgres",
+                            "uid": "uid_timescaledb"
+                        },
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "select w.event_timestamp as \"timestamp\", c.organization_name as \"Organization Name\", w.metric_count as \"Calls Overflowed\" from webhook_events w join organizations c on c.organization_id = w.organization_id GROUP BY c.organization_name , w.event_timestamp, w.metric_count",
+                        "refId": "A",
+                        "sql": {
+                            "columns": [
+                                {
+                                    "parameters": [],
+                                    "type": "function"
+                                }
+                            ],
+                            "groupBy": [
+                                {
+                                    "property": {
+                                        "type": "string"
+                                    },
+                                    "type": "groupBy"
+                                }
+                            ],
+                            "limit": 50
+                        }
+                    }
+                ],
+                "title": "Calls Overflowed Distribution",
+                "type": "barchart"
+            }
+        ],
+        "refresh": "",
+        "revision": 1,
+        "schemaVersion": 38,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+            "list": [
+                {
+                    "current": {
+                        "selected": true,
+                        "text": "All",
+                        "value": "$__all"
+                    },
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "uid_timescaledb"
+                    },
+                    "definition": "select organization_name from organizations",
+                    "hide": 0,
+                    "includeAll": true,
+                    "multi": false,
+                    "name": "OrganizationName",
+                    "options": [],
+                    "query": "select organization_name from organizations",
+                    "refresh": 1,
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": 0,
+                    "type": "query"
+                }
+            ]
+        },
+        "time": {
+            "from": "now-6h",
+            "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "11.2 Organization Calls Overflowed",
+        "uid": "L9iHzsQVz",
+        "version": 1,
+        "weekStart": ""
+    },
+    "folderId": 1,
+    "folderUid": "KXS09oy7k"
+}
